@@ -33,6 +33,8 @@ The development of this tutorial is a dynamic process that we would like to shar
 ## Data
 In the course of the tutorial we will 'create' small amounts of data ourselves or download them from publicly accessible repositories. It is not necessary to import data beforehand. However, it may make sense to bring your own data with you so that the steps can be carried out using this data.
 
-This workshop is organized by the ISAAKiel group (Initiative for Statistical Analysis in Archaeology Kiel) https://isaakiel.github.io.
+## Copyright and Licence
+
+The content of the repository is licenced under [GPL-2.0](LICENSE). This workshop is created and organized by the [ISAAKiel group (Initiative for Statistical Analysis in Archaeology Kiel)](https://isaakiel.github.io).
 
 ![ISAAK Logo](https://raw.githubusercontent.com/ISAAKiel/ISAAKiel.github.io/master/elements/logo.png)
