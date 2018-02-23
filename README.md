@@ -2,6 +2,8 @@
 
 *Martin Hinz, Clemens Schmid (CAU Kiel)*
 
+Documents and scripts for the Workshop 'Processing Radiocarbon Data with R' at the [2018 Computer Applications and Quantitative Methods in Archaeology (CAA) International Conference](http://2018.caaconference.org/).
+
 ## Abstract
 
 Dealing with 14C dates is one of THE essential activities that occupy many archaeologists today. Oxcal is one impressive instrument for many daily routines with 14C dates. But there are some aspects where a proper statistical tool comes in handy. In this workshop we will explore the possibilities of R to deal with 14C dates.
