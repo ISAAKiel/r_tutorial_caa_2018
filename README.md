@@ -30,7 +30,7 @@ The development of this tutorial is a dynamic process that we would like to shar
 * [RStudio](https://www.rstudio.com/products/rstudio/download/)
 * Packages: *we will offer an R-script shortly before the tutorial, which automatically installs the necessary packages; instructions follow*
 
-[The installation of the required software (under Windows) is described here](https://github.com/dirkseidensticker/R-Tutorial_CAA2016/blob/master/Installation instructions_Windows.md)
+[The installation of the required software (under Windows) is described here](https://github.com/eScienceCenter/R-Tutorial_20170707/blob/master/Installationsanleitung_Windows.pdf) (German).
 
 There is also an ISAAK video Tutorial available:
 
