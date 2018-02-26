@@ -30,7 +30,11 @@ The development of this tutorial is a dynamic process that we would like to shar
 * [RStudio](https://www.rstudio.com/products/rstudio/download/)
 * Packages: *we will offer an R-script shortly before the tutorial, which automatically installs the necessary packages; instructions follow*
 
-[The installation of the required software (under Windows) is described here](https://github.com/dirkseidensticker/R-Tutorial_CAA2016/blob/master/Installation instructions_Windows. md)
+[The installation of the required software (under Windows) is described here](https://github.com/dirkseidensticker/R-Tutorial_CAA2016/blob/master/Installation instructions_Windows.md)
+
+There is also an ISAAK video Tutorial available:
+
+[![[IBR-en 001] Install R and R Studio on Windows](https://img.youtube.com/vi/P783pgSd-ik/0.jpg)](https://www.youtube.com/watch?v=P783pgSd-ik)
 
 ## Data
 In the course of the tutorial we will 'create' small amounts of data ourselves or download them from publicly accessible repositories. It is not necessary to import data beforehand. However, it may make sense to bring your own data with you so that the steps can be carried out using this data.
