@@ -9,9 +9,7 @@ editor_options:
   chunk_output_type: console
 ---
 
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
+
 
 ## Basic Calibration in R
 ### Available Options
@@ -48,7 +46,8 @@ Essentially it is Bchron, rcarbon and oxcAAR!
 
 So lets start with them and install them if necessary
 
-```{r install_packages}
+
+```r
 # A bit of magick
 package_list <- c("Bchron", "rcarbon", "oxcAAR") # The packages we would like to have
 
@@ -66,7 +65,8 @@ Luckily, all calibration functions are named differently, so there is no overwri
 
 We might be eager to do our first calibration, so lets start immediatly. We need a 14C date for that, consisting of BP uncal and BP standard deviation:
 
-```{r introducing_14_c_date}
+
+```r
 bp <- 4000
 std <- 25
 ```
@@ -77,9 +77,39 @@ With that at hand, we can start calibration:
 
 Here it is straight forward, just plug in your date and let it run
 
-```{r quick_cal_rcarbon}
+
+```r
 calDate.rcarbon <- calibrate(bp,std)
+```
+
+```
+## [1] "Done."
+```
+
+```r
 str(calDate.rcarbon)
+```
+
+```
+## List of 3
+##  $ metadata :'data.frame':	1 obs. of  11 variables:
+##   ..$ DateID    : chr "1"
+##   ..$ CRA       : num 4000
+##   ..$ Error     : num 25
+##   ..$ Details   : logi NA
+##   ..$ CalCurve  : chr "intcal13"
+##   ..$ ResOffsets: num 0
+##   ..$ ResErrors : num 0
+##   ..$ StartBP   : num 50000
+##   ..$ EndBP     : num 0
+##   ..$ Normalised: logi TRUE
+##   ..$ CalEPS    : num 1e-05
+##  $ grids    :List of 1
+##   ..$ 1:Classes 'calGrid' and 'data.frame':	223 obs. of  2 variables:
+##   .. ..$ calBP : num [1:223] 4779 4778 4777 4776 4775 ...
+##   .. ..$ PrDens: num [1:223] 1.19e-05 1.51e-05 1.91e-05 2.40e-05 3.02e-05 ...
+##  $ calmatrix: logi NA
+##  - attr(*, "class")= chr [1:2] "CalDates" "list"
 ```
 
 The result is a list containing
@@ -88,9 +118,12 @@ The result is a list containing
  * $calmatrix: A matrix of probability values, one row per calendar year in timeRange and one column per date. Just a different format of $grids. This defaults to NA if not `calMatrix=TRUE` is specified in the call.
 
 So let's plot it 
-```{r quick_cal_rcarbon_plot}
+
+```r
 plot(calDate.rcarbon)
 ```
+
+![](first_part_basic_calibration_files/figure-html/quick_cal_rcarbon_plot-1.png)<!-- -->
 
 Nice and clean!
 
@@ -98,9 +131,21 @@ Nice and clean!
 
 Again straight forward, specify BP, std and (here necessary, in rcarbon optional) the calibration curve
 
-```{r quick_cal_BChron}
+
+```r
 calDate.Bchron <- BchronCalibrate(ages = bp, ageSds = std, calCurves = "intcal13")
 str(calDate.Bchron)
+```
+
+```
+## List of 1
+##  $ Date1:List of 5
+##   ..$ ages     : num 4000
+##   ..$ ageSds   : num 25
+##   ..$ calCurves: chr "intcal13"
+##   ..$ ageGrid  : num [1:171] 4407 4408 4409 4410 4411 ...
+##   ..$ densities: num [1:171] 1.25e-05 1.85e-05 2.73e-05 3.97e-05 6.44e-05 ...
+##  - attr(*, "class")= chr "BchronCalibratedDates"
 ```
 
 The result is a list containing
@@ -113,9 +158,12 @@ The result is a list containing
 
 So let's plot it 
 
-```{r quick_cal_BChron_plot}
+
+```r
 plot(calDate.Bchron)
 ```
+
+![](first_part_basic_calibration_files/figure-html/quick_cal_BChron_plot-1.png)<!-- -->
 
 Also nice, lacking the uncal probability and the calibration curve, but highlighting the 95% highest density region (2 sigma range).
 
@@ -123,15 +171,61 @@ Also nice, lacking the uncal probability and the calibration curve, but highligh
 
 oxcAAR needs a bit of extra love before it works. It relies on OxCal as calibration backend, so we have to install it first. Luckily there is a helper for doing that:
 
-```{r oxcAAR_install_OxCal}
+
+```r
 quickSetupOxcal()
+```
+
+```
+## Oxcal is installed but Oxcal executable path is wrong. Let's have a look...
+```
+
+```
+## Oxcal path set!
+```
+
+```
+## NULL
 ```
 
 Oxcal is installed in your working directory, and the path to the executable is set. With that we might proceed to the calibration:
 
-```{r quick_cal_oxcAAR}
+
+```r
 calDate.oxcAAR <- oxcalCalibrate(bp, std)
 str(calDate.oxcAAR)
+```
+
+```
+## List of 1
+##  $ 1:List of 6
+##   ..$ name             : chr "1"
+##   ..$ bp               : int 4000
+##   ..$ std              : int 25
+##   ..$ cal_curve        :List of 5
+##   .. ..$ name      : chr " IntCal13 atmospheric curve (Reimer et al 2013)"
+##   .. ..$ resolution: num 5
+##   .. ..$ bp        : num [1:10001] 46401 46396 46391 46386 46381 ...
+##   .. ..$ bc        : num [1:10001] -48050 -48044 -48040 -48034 -48030 ...
+##   .. ..$ sigma     : num [1:10001] 274 274 274 273 273 ...
+##   ..$ sigma_ranges     :List of 3
+##   .. ..$ one_sigma  :'data.frame':	2 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:2] -2564 -2495
+##   .. .. ..$ end        : num [1:2] -2522 -2478
+##   .. .. ..$ probability: num [1:2] 48.6 19.6
+##   .. ..$ two_sigma  :'data.frame':	1 obs. of  3 variables:
+##   .. .. ..$ start      : num -2572
+##   .. .. ..$ end        : num -2470
+##   .. .. ..$ probability: num 95.4
+##   .. ..$ three_sigma:'data.frame':	1 obs. of  3 variables:
+##   .. .. ..$ start      : num -2618
+##   .. .. ..$ end        : num -2460
+##   .. .. ..$ probability: num 99.7
+##   ..$ raw_probabilities:'data.frame':	118 obs. of  2 variables:
+##   .. ..$ dates        : num [1:118] -2870 -2864 -2860 -2854 -2850 ...
+##   .. ..$ probabilities: num [1:118] 0.00 0.00 0.00 2.41e-08 4.83e-08 ...
+##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
+##  - attr(*, "class")= chr [1:2] "list" "oxcAARCalibratedDatesList"
 ```
 
 The resulting object is a bit more complicated. It is a list of calibrated dates (one each for each uncalibrated date inserted in the call), each containing
@@ -145,14 +239,20 @@ The resulting object is a bit more complicated. It is a list of calibrated dates
 
 Again, let's plot it 
 
-```{r quick_cal_oxcAAR_plot}
+
+```r
 plot(calDate.oxcAAR)
 ```
+
+![](first_part_basic_calibration_files/figure-html/quick_cal_oxcAAR_plot-1.png)<!-- -->
 
 Sigma ranges, probabilities, everything is in there.
 
 Want a calibration curve?
 
-```{r quick_cal_oxcAAR_calcurve_plot}
+
+```r
 calcurve_plot(calDate.oxcAAR)
 ```
+
+![](first_part_basic_calibration_files/figure-html/quick_cal_oxcAAR_calcurve_plot-1.png)<!-- -->
