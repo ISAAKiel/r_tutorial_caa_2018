@@ -15,30 +15,30 @@ editor_options:
 ### Available Options
 
 * [ArchaeoPhases](https://cran.rstudio.com/web/packages/ArchaeoPhases/index.html)
-  * ![Marie-Anne Vibet](https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
-  * "Post-Processing of the Markov Chain Simulated by 'ChronoModel', 'Oxcal' or 'BCal'"
-  * Not really for calibration itself, has to be done externally
+* ![Marie-Anne Vibet](https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
+* "Post-Processing of the Markov Chain Simulated by 'ChronoModel', 'Oxcal' or 'BCal'"
+* Not really for calibration itself, has to be done externally
 * [ArchSeries](https://github.com/davidcorton/archSeries)
-  * ![David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
-  * "Frequency time-series tools for archaeology"
-  * No calibration options
-  * Not on CRAN yet
+* ![David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
+* "Frequency time-series tools for archaeology"
+* No calibration options
+* Not on CRAN yet
 * [Bchron](http://cran.rstudio.com/web/packages/Bchron/index.html)
-  * ![Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
-  * "A Bayesian radiocarbon chronology model with R"
-  * BchronCalibrate()
+* ![Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
+* "A Bayesian radiocarbon chronology model with R"
+* BchronCalibrate()
 * [rcarbon](https://cran.r-project.org/web/packages/rcarbon/index.html)
-  * ![Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
-  * "Calibration and Analysis of Radiocarbon Dates"
-  * calibrate()
+* ![Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
+* "Calibration and Analysis of Radiocarbon Dates"
+* calibrate()
 * [oxcAAR](https://cran.r-project.org/web/packages/oxcAAR/index.html)
-  * ![ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
-  * "Interface to 'OxCal' Radiocarbon Calibration"
-  * oxcalCalibrate()
+* ![ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
+* "Interface to 'OxCal' Radiocarbon Calibration"
+* oxcalCalibrate()
 * Hand made (it is actually not that hard)
-  * Basic
-  * by means of matrix algebra (see [my blog post on basic calibration](http://martinhinz.info/jekyll/update/blog/2016/06/03/simple_calibration.html)) 
-  * by means of bayesian statistics (see [my blog post on bayesian calibration](http://martinhinz.info/jekyll/update/blog/2017/01/23/bayesian_calibration.html))
+* Basic
+* by means of matrix algebra (see [my blog post on basic calibration](http://martinhinz.info/jekyll/update/blog/2016/06/03/simple_calibration.html)) 
+* by means of bayesian statistics (see [my blog post on bayesian calibration](http://martinhinz.info/jekyll/update/blog/2017/01/23/bayesian_calibration.html))
 
 Essentially it is Bchron, rcarbon and oxcAAR!
 
@@ -131,9 +131,9 @@ str(calDate.rcarbon)
 ```
 
 The result is a list containing
- * $metadata: The metadata for the (uncalibrated) date
- * $grids: The actual calibrated probabilities
- * $calmatrix: A matrix of probability values, one row per calendar year (BP!) in timeRange and one column per date. Just a different format of $grids. This defaults to NA if not `calMatrix=TRUE` is specified in the call.
+* $metadata: The metadata for the (uncalibrated) date
+* $grids: The actual calibrated probabilities
+* $calmatrix: A matrix of probability values, one row per calendar year (BP!) in timeRange and one column per date. Just a different format of $grids. This defaults to NA if not `calMatrix=TRUE` is specified in the call.
 
 So let's plot it 
 
@@ -167,12 +167,12 @@ str(calDate.Bchron)
 ```
 
 The result is a list containing
- * $ages: The uncalibrated date
- * $ageSds: The standard deviation of the uncalibrated date
- * $calCurves: The calibration curve used
- [We have specified this as input parameters]
- * $ageGrid: The calibrated BP (!) values
- * $densities: The calibrated probabilities
+* $ages: The uncalibrated date
+* $ageSds: The standard deviation of the uncalibrated date
+* $calCurves: The calibration curve used
+[We have specified this as input parameters]
+* $ageGrid: The calibrated BP (!) values
+* $densities: The calibrated probabilities
 
 So let's plot it 
 
@@ -248,12 +248,12 @@ str(calDate.oxcAAR)
 
 The resulting object is a bit more complicated. It is a list of calibrated dates (one each for each uncalibrated date inserted in the call), each containing
 
- * $name: A name for the date. If not given, a consecutive number.
- * $bp, $std: The uncalibrated date and its standard deviation
- [We have specified this as input parameters]
- * $cal_curve: The calibration curve used, with full parameterisation. Defaults to intcal13
- * $sigma_ranges: The sigma ranges for the calibrated date (1,2,3 sigma)
- * $raw_probabilities: a data frame containing the BC (!) dates and the calibrated probabilities
+* $name: A name for the date. If not given, a consecutive number.
+* $bp, $std: The uncalibrated date and its standard deviation
+[We have specified this as input parameters]
+* $cal_curve: The calibration curve used, with full parameterisation. Defaults to intcal13
+* $sigma_ranges: The sigma ranges for the calibrated date (1,2,3 sigma)
+* $raw_probabilities: a data frame containing the BC (!) dates and the calibrated probabilities
 
 Again, let's plot it 
 
@@ -441,6 +441,8 @@ plot(calMultiDate.rcarbon, ind = 2)
 
 ## Why oxcAAR?
 
+### Differences between calibration algorithms
+
 In archaeology, OxCal has become a quasi standard for calibration. One might like that or not, but to make results comparable it is actually not bad to agree on a standard. Calibration itself is not a hard thing to do (we will see that later), but the results of the different implementations might vary. Lets compare (in doing so we shift the dates from oxcAAR by 1950 to make them BP and add 0.5 due to the specific output values of OxCal):
 
 ![](first_part_basic_calibration_files/figure-html/comp_results_packages-1.png)<!-- -->
@@ -454,3 +456,116 @@ If we zoom in and just look at the differences:
 Also rcarbon differs slightly from the implementation in OxCal. This might not mean much, and it does not imply that OxCal is actually the correct result, but it means that the different algorithm produce slighly different probabilities.
 
 So, if you like to work with results that are exactly like those who are using OxCal, oxcAAR might be the best option. This especially holds true if you later want to do rather esoteric things like sum calibration. Removing every possible source of mistrust might be relevant in this field, still.
+
+### Sequential calibration
+
+What is also possible with oxcAAR (and as it seems, with no other package currently), is using the capabilities of OxCal to produce sequential calibrations. This is an aspect that should be made more accessible in the future, but it is already possible now.
+
+Lets assume we have something like that:
+
+
+```oxcal
+top soil
+------------------------
+  Phase 3
+Sample 6 BP 3100 +- 25
+Sample 5 BP 3250 +- 25
+------------------------
+  Phase 2
+Sample 4 BP 3230 +- 25
+Sample 3 BP 3370 +- 25
+------------------------
+  Phase 1
+Sample 2 BP 3640 +- 25
+Sample 1 BP 3340 +- 25
+------------------------
+  virgin soil
+```
+
+We could represent this in a dataframe like this:
+
+```r
+my_sequence <- data.frame(name=character(), phase=numeric(), bp=numeric(), std = numeric(), stringsAsFactors = F)
+
+my_sequence[1,] <- list("Sample 6", 3, 3100, 25)
+my_sequence[2,] <- list("Sample 5", 3, 3250, 27)
+my_sequence[3,] <- list("Sample 4", 2, 3230, 31)
+my_sequence[4,] <- list("Sample 3", 2, 3370, 50)
+my_sequence[5,] <- list("Sample 2", 1, 3640, 28)
+my_sequence[6,] <- list("Sample 1", 1, 3340, 33)
+
+my_sequence
+```
+
+```
+##       name phase   bp std
+## 1 Sample 6     3 3100  25
+## 2 Sample 5     3 3250  27
+## 3 Sample 4     2 3230  31
+## 4 Sample 3     2 3370  50
+## 5 Sample 2     1 3640  28
+## 6 Sample 1     1 3340  33
+```
+
+In the real world you might have the data already present in a convenient format, like csv data exported from Excel.
+
+
+```r
+R_Phase <- function(r_dates_strings, names='') {
+  paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
+}
+
+Boundary <- function(names) {
+  paste("Boundary(\"", names, "\");", sep = "")
+}
+
+wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
+  n_phases <- length(phases_strings)
+  if(length(boundary_names)==1) {
+    if(is.na(boundary_names)){
+    boundary_names <- 1:n_phases + 1
+    } else {
+      boundary_names <- rep(boundary_names,n_phases + 1)
+    }
+  }
+  my_result <- character(n_phases*2+1)
+  for(i in 1:n_phases) {
+    my_result[2*i-1] <- Boundary(boundary_names[i])
+    my_result[2*i] <- phases_strings[i]
+  }
+  my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
+  return(my_result)
+}
+
+Sequence <- function(sequence_elements, name='') {
+  paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
+}
+```
+
+
+```r
+test <- by(my_sequence,my_sequence$phase, function(x)
+  R_Date(x$name,x$bp,x$std))
+
+phases <- R_Phase(names=c("1","2","3"), r_dates_strings = test)
+boundary_name <- c("begin","1->2","2->3","end")
+my_sequence_elements <- wrap_in_boundaries(phases, boundary_name)
+
+my_oxcal_code <- Sequence(my_sequence_elements, name = "my_sequence")
+my_result_file <- executeOxcalScript(my_oxcal_code)
+my_result_text <- readOxcalOutput(my_result_file)
+my_result_data <- parseOxcalOutput(my_result_text)
+plot(my_result_data)
+```
+
+![](first_part_basic_calibration_files/figure-html/make_string_for_sequence_calibration-1.png)<!-- -->
+
+Compare unmodelled:
+
+
+```r
+my_unmodelled_result_data <- oxcalCalibrate(bp=my_sequence$bp, std = my_sequence$std, names = my_sequence$name)
+plot(my_unmodelled_result_data)
+```
+
+![](first_part_basic_calibration_files/figure-html/unmodeled_sequence_calibration-1.png)<!-- -->
