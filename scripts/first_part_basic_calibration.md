@@ -49,7 +49,8 @@ So lets start with them and install them if necessary
 
 ```r
 # A bit of magick
-package_list <- c("Bchron", "rcarbon", "oxcAAR") # The packages we would like to have
+# I added dplyer because we might need it later
+package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we would like to have
 
 for (package in package_list){ # for each in the list
   if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
@@ -59,7 +60,24 @@ for (package in package_list){ # for each in the list
 }
 ```
 
-Luckily, all calibration functions are named differently, so there is no overwriting of the functions going on here. We can have all of them side by side.
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+Luckily, all calibration functions are named differently, so there is no overwriting of the functions going on here. Only dplyr is masking some functions, but this should not bother us. We can have all of them side by side.
 
 ## Just doing calibration
 
@@ -68,7 +86,7 @@ We might be eager to do our first calibration, so lets start immediatly. We need
 
 ```r
 bp <- 4000
-std <- 25
+std <- 50
 ```
 
 With that at hand, we can start calibration:
@@ -95,7 +113,7 @@ str(calDate.rcarbon)
 ##  $ metadata :'data.frame':	1 obs. of  11 variables:
 ##   ..$ DateID    : chr "1"
 ##   ..$ CRA       : num 4000
-##   ..$ Error     : num 25
+##   ..$ Error     : num 50
 ##   ..$ Details   : logi NA
 ##   ..$ CalCurve  : chr "intcal13"
 ##   ..$ ResOffsets: num 0
@@ -105,9 +123,9 @@ str(calDate.rcarbon)
 ##   ..$ Normalised: logi TRUE
 ##   ..$ CalEPS    : num 1e-05
 ##  $ grids    :List of 1
-##   ..$ 1:Classes 'calGrid' and 'data.frame':	223 obs. of  2 variables:
-##   .. ..$ calBP : num [1:223] 4779 4778 4777 4776 4775 ...
-##   .. ..$ PrDens: num [1:223] 1.19e-05 1.51e-05 1.91e-05 2.40e-05 3.02e-05 ...
+##   ..$ 1:Classes 'calGrid' and 'data.frame':	624 obs. of  2 variables:
+##   .. ..$ calBP : num [1:624] 4821 4820 4819 4818 4817 ...
+##   .. ..$ PrDens: num [1:624] 1.13e-05 1.47e-05 1.60e-05 1.74e-05 1.89e-05 ...
 ##  $ calmatrix: logi NA
 ##  - attr(*, "class")= chr [1:2] "CalDates" "list"
 ```
@@ -115,7 +133,7 @@ str(calDate.rcarbon)
 The result is a list containing
  * $metadata: The metadata for the (uncalibrated) date
  * $grids: The actual calibrated probabilities
- * $calmatrix: A matrix of probability values, one row per calendar year in timeRange and one column per date. Just a different format of $grids. This defaults to NA if not `calMatrix=TRUE` is specified in the call.
+ * $calmatrix: A matrix of probability values, one row per calendar year (BP!) in timeRange and one column per date. Just a different format of $grids. This defaults to NA if not `calMatrix=TRUE` is specified in the call.
 
 So let's plot it 
 
@@ -141,10 +159,10 @@ str(calDate.Bchron)
 ## List of 1
 ##  $ Date1:List of 5
 ##   ..$ ages     : num 4000
-##   ..$ ageSds   : num 25
+##   ..$ ageSds   : num 50
 ##   ..$ calCurves: chr "intcal13"
-##   ..$ ageGrid  : num [1:171] 4407 4408 4409 4410 4411 ...
-##   ..$ densities: num [1:171] 1.25e-05 1.85e-05 2.73e-05 3.97e-05 6.44e-05 ...
+##   ..$ ageGrid  : num [1:625] 4160 4161 4162 4163 4164 ...
+##   ..$ densities: num [1:625] 1.03e-05 1.14e-05 1.26e-05 1.40e-05 1.55e-05 ...
 ##  - attr(*, "class")= chr "BchronCalibratedDates"
 ```
 
@@ -165,7 +183,7 @@ plot(calDate.Bchron)
 
 ![](first_part_basic_calibration_files/figure-html/quick_cal_BChron_plot-1.png)<!-- -->
 
-Also nice, lacking the uncal probability and the calibration curve, but highlighting the 95% highest density region (2 sigma range).
+Also nice, lacking the uncal probability and the calibration curve, but highlighting the 95% highest density region (2 sigma range). Note that time is running here from right to left (BP dates).
 
 ### oxcAAR
 
@@ -201,7 +219,7 @@ str(calDate.oxcAAR)
 ##  $ 1:List of 6
 ##   ..$ name             : chr "1"
 ##   ..$ bp               : int 4000
-##   ..$ std              : int 25
+##   ..$ std              : int 50
 ##   ..$ cal_curve        :List of 5
 ##   .. ..$ name      : chr " IntCal13 atmospheric curve (Reimer et al 2013)"
 ##   .. ..$ resolution: num 5
@@ -209,21 +227,21 @@ str(calDate.oxcAAR)
 ##   .. ..$ bc        : num [1:10001] -48050 -48044 -48040 -48034 -48030 ...
 ##   .. ..$ sigma     : num [1:10001] 274 274 274 273 273 ...
 ##   ..$ sigma_ranges     :List of 3
-##   .. ..$ one_sigma  :'data.frame':	2 obs. of  3 variables:
-##   .. .. ..$ start      : num [1:2] -2564 -2495
-##   .. .. ..$ end        : num [1:2] -2522 -2478
-##   .. .. ..$ probability: num [1:2] 48.6 19.6
-##   .. ..$ two_sigma  :'data.frame':	1 obs. of  3 variables:
+##   .. ..$ one_sigma  :'data.frame':	1 obs. of  3 variables:
 ##   .. .. ..$ start      : num -2572
-##   .. .. ..$ end        : num -2470
-##   .. .. ..$ probability: num 95.4
-##   .. ..$ three_sigma:'data.frame':	1 obs. of  3 variables:
-##   .. .. ..$ start      : num -2618
-##   .. .. ..$ end        : num -2460
-##   .. .. ..$ probability: num 99.7
-##   ..$ raw_probabilities:'data.frame':	118 obs. of  2 variables:
-##   .. ..$ dates        : num [1:118] -2870 -2864 -2860 -2854 -2850 ...
-##   .. ..$ probabilities: num [1:118] 0.00 0.00 0.00 2.41e-08 4.83e-08 ...
+##   .. .. ..$ end        : num -2468
+##   .. .. ..$ probability: num 68.2
+##   .. ..$ two_sigma  :'data.frame':	3 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:3] -2834 -2665 -2384
+##   .. .. ..$ end        : num [1:3] -2815 -2395 -2344
+##   .. .. ..$ probability: num [1:3] 1.7 90.5 3.2
+##   .. ..$ three_sigma:'data.frame':	3 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:3] -2860 -2756 -2704
+##   .. .. ..$ end        : num [1:3] -2805 -2716 -2290
+##   .. .. ..$ probability: num [1:3] 2.5 0.6 96.6
+##   ..$ raw_probabilities:'data.frame':	158 obs. of  2 variables:
+##   .. ..$ dates        : num [1:158] -2910 -2904 -2900 -2894 -2890 ...
+##   .. ..$ probabilities: num [1:158] 0.00 0.00 0.00 7.19e-09 3.59e-08 ...
 ##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
 ##  - attr(*, "class")= chr [1:2] "list" "oxcAARCalibratedDatesList"
 ```
@@ -256,3 +274,183 @@ calcurve_plot(calDate.oxcAAR)
 ```
 
 ![](first_part_basic_calibration_files/figure-html/quick_cal_oxcAAR_calcurve_plot-1.png)<!-- -->
+
+### Multiple dates
+
+So, if you like to calibrate multiple dates, that is also not hard:
+
+
+```r
+calMultiDate.rcarbon <- calibrate(x = c(4000,3000), errors = c(50,25) )
+```
+
+```
+## [1] "Calibrating radiocarbon ages..."
+##   |                                                                         |                                                                 |   0%  |                                                                         |=================================================================| 100%
+## [1] "Done."
+```
+
+```r
+str(calMultiDate.rcarbon)
+```
+
+```
+## List of 3
+##  $ metadata :'data.frame':	2 obs. of  11 variables:
+##   ..$ DateID    : chr [1:2] "1" "2"
+##   ..$ CRA       : num [1:2] 4000 3000
+##   ..$ Error     : num [1:2] 50 25
+##   ..$ Details   : logi [1:2] NA NA
+##   ..$ CalCurve  : chr [1:2] "intcal13" "intcal13"
+##   ..$ ResOffsets: num [1:2] 0 0
+##   ..$ ResErrors : num [1:2] 0 0
+##   ..$ StartBP   : num [1:2] 50000 50000
+##   ..$ EndBP     : num [1:2] 0 0
+##   ..$ Normalised: logi [1:2] TRUE TRUE
+##   ..$ CalEPS    : num [1:2] 1e-05 1e-05
+##  $ grids    :List of 2
+##   ..$ 1:Classes 'calGrid' and 'data.frame':	624 obs. of  2 variables:
+##   .. ..$ calBP : num [1:624] 4821 4820 4819 4818 4817 ...
+##   .. ..$ PrDens: num [1:624] 1.13e-05 1.47e-05 1.60e-05 1.74e-05 1.89e-05 ...
+##   ..$ 2:Classes 'calGrid' and 'data.frame':	352 obs. of  2 variables:
+##   .. ..$ calBP : num [1:352] 3354 3353 3352 3351 3350 ...
+##   .. ..$ PrDens: num [1:352] 1.01e-05 1.15e-05 1.31e-05 1.49e-05 1.69e-05 ...
+##  $ calmatrix: logi NA
+##  - attr(*, "class")= chr [1:2] "CalDates" "list"
+```
+
+```r
+calMultiDate.Bchron <- BchronCalibrate(ages = c(4000,3000), ageSds = c(50,25), calCurves = c("intcal13","intcal13"))
+str(calMultiDate.Bchron)
+```
+
+```
+## List of 2
+##  $ Date1:List of 5
+##   ..$ ages     : num 4000
+##   ..$ ageSds   : num 50
+##   ..$ calCurves: chr "intcal13"
+##   ..$ ageGrid  : num [1:625] 4160 4161 4162 4163 4164 ...
+##   ..$ densities: num [1:625] 1.03e-05 1.14e-05 1.26e-05 1.40e-05 1.55e-05 ...
+##  $ Date2:List of 5
+##   ..$ ages     : num 3000
+##   ..$ ageSds   : num 25
+##   ..$ calCurves: chr "intcal13"
+##   ..$ ageGrid  : num [1:303] 3010 3036 3037 3038 3039 ...
+##   ..$ densities: num [1:303] 1.08e-05 1.03e-05 1.11e-05 1.21e-05 1.31e-05 ...
+##  - attr(*, "class")= chr "BchronCalibratedDates"
+```
+
+```r
+calMultiDate.oxcAAR <- oxcalCalibrate(bp = c(4000,3000), std = c(50,25))
+str(calMultiDate.oxcAAR)
+```
+
+```
+## List of 2
+##  $ 1:List of 6
+##   ..$ name             : chr "1"
+##   ..$ bp               : int 4000
+##   ..$ std              : int 50
+##   ..$ cal_curve        :List of 5
+##   .. ..$ name      : chr " IntCal13 atmospheric curve (Reimer et al 2013)"
+##   .. ..$ resolution: num 5
+##   .. ..$ bp        : num [1:10001] 46401 46396 46391 46386 46381 ...
+##   .. ..$ bc        : num [1:10001] -48050 -48044 -48040 -48034 -48030 ...
+##   .. ..$ sigma     : num [1:10001] 274 274 274 273 273 ...
+##   ..$ sigma_ranges     :List of 3
+##   .. ..$ one_sigma  :'data.frame':	1 obs. of  3 variables:
+##   .. .. ..$ start      : num -2572
+##   .. .. ..$ end        : num -2468
+##   .. .. ..$ probability: num 68.2
+##   .. ..$ two_sigma  :'data.frame':	3 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:3] -2834 -2665 -2384
+##   .. .. ..$ end        : num [1:3] -2815 -2395 -2344
+##   .. .. ..$ probability: num [1:3] 1.7 90.5 3.2
+##   .. ..$ three_sigma:'data.frame':	3 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:3] -2860 -2756 -2704
+##   .. .. ..$ end        : num [1:3] -2805 -2716 -2290
+##   .. .. ..$ probability: num [1:3] 2.5 0.6 96.6
+##   ..$ raw_probabilities:'data.frame':	158 obs. of  2 variables:
+##   .. ..$ dates        : num [1:158] -2910 -2904 -2900 -2894 -2890 ...
+##   .. ..$ probabilities: num [1:158] 0.00 0.00 0.00 7.19e-09 3.59e-08 ...
+##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
+##  $ 2:List of 6
+##   ..$ name             : chr "2"
+##   ..$ bp               : int 3000
+##   ..$ std              : int 25
+##   ..$ cal_curve        :List of 5
+##   .. ..$ name      : chr " IntCal13 atmospheric curve (Reimer et al 2013)"
+##   .. ..$ resolution: num 5
+##   .. ..$ bp        : num [1:10001] 46401 46396 46391 46386 46381 ...
+##   .. ..$ bc        : num [1:10001] -48050 -48044 -48040 -48034 -48030 ...
+##   .. ..$ sigma     : num [1:10001] 274 274 274 273 273 ...
+##   ..$ sigma_ranges     :List of 3
+##   .. ..$ one_sigma  :'data.frame':	3 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:3] -1278 -1200 -1137
+##   .. .. ..$ end        : num [1:3] -1206 -1194 -1134
+##   .. .. ..$ probability: num [1:3] 64.4 2.2 1.7
+##   .. ..$ two_sigma  :'data.frame':	3 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:3] -1373 -1299 -1146
+##   .. .. ..$ end        : num [1:3] -1354 -1154 -1126
+##   .. .. ..$ probability: num [1:3] 3.6 85.6 6.2
+##   .. ..$ three_sigma:'data.frame':	2 obs. of  3 variables:
+##   .. .. ..$ start      : num [1:2] -1390 -1319
+##   .. .. ..$ end        : num [1:2] -1336 -1112
+##   .. .. ..$ probability: num [1:2] 5.5 94.2
+##   ..$ raw_probabilities:'data.frame':	90 obs. of  2 variables:
+##   .. ..$ dates        : num [1:90] -1440 -1434 -1430 -1424 -1420 ...
+##   .. ..$ probabilities: num [1:90] 0.00 0.00 0.00 3.43e-08 6.87e-08 ...
+##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
+##  - attr(*, "class")= chr [1:2] "list" "oxcAARCalibratedDatesList"
+```
+
+In case of Bchron, for every date a calibration curve must be given independently. Can be a bit tedious, but one can script that, too.
+
+The result is all the same like when calibrating an individual date, but in every case two results are produce, one for each uncalibrated date. In case of rcarbon, the dates are internally separated, in case of Bchron and oxcAAR, the result is simply is list of calibrated dates. 
+
+How are multiple dates visualised in each package?
+
+
+```r
+plot(calMultiDate.rcarbon)
+```
+
+![](first_part_basic_calibration_files/figure-html/cal_multiple_dates_plot-1.png)<!-- -->
+
+```r
+plot(calMultiDate.Bchron)
+```
+
+![](first_part_basic_calibration_files/figure-html/cal_multiple_dates_plot-2.png)<!-- -->![](first_part_basic_calibration_files/figure-html/cal_multiple_dates_plot-3.png)<!-- -->
+
+```r
+plot(calMultiDate.oxcAAR)
+```
+
+![](first_part_basic_calibration_files/figure-html/cal_multiple_dates_plot-4.png)<!-- -->
+
+In case of Bchron there is an individual plot for each date, with oxcAAR both dates are plotted on the same x-axis (time), while rcarbon only returns the first date. With an additional parameter you can convince rcarbon to plot the second date, but all the time only one date per plot.
+
+
+```r
+plot(calMultiDate.rcarbon, ind = 2)
+```
+
+![](first_part_basic_calibration_files/figure-html/cal_multiple_dates_plot_rcarbon_plot_second_date-1.png)<!-- -->
+
+## Why oxcAAR?
+
+In archaeology, OxCal has become a quasi standard for calibration. One might like that or not, but to make results comparable it is actually not bad to agree on a standard. Calibration itself is not a hard thing to do (we will see that later), but the results of the different implementations might vary. Lets compare (in doing so we shift the dates from oxcAAR by 1950 to make them BP and add 0.5 due to the specific output values of OxCal):
+
+![](first_part_basic_calibration_files/figure-html/comp_results_packages-1.png)<!-- -->
+
+While rcarbon and oxcAAR are quite similar (based on the same algorithm, although OxCal works on 5 years resolution), Bchron results differ.
+
+If we zoom in and just look at the differences:
+
+![](first_part_basic_calibration_files/figure-html/comp_results_packages_detail-1.png)<!-- -->
+
+Also rcarbon differs slightly from the implementation in OxCal. This might not mean much, and it does not imply that OxCal is actually the correct result, but it means that the different algorithm produce slighly different probabilities.
+
+So, if you like to work with results that are exactly like those who are using OxCal, oxcAAR might be the best option. This especially holds true if you later want to do rather esoteric things like sum calibration. Removing every possible source of mistrust might be relevant in this field, still.

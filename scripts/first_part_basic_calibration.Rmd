@@ -50,7 +50,8 @@ So lets start with them and install them if necessary
 
 ```{r install_packages}
 # A bit of magick
-package_list <- c("Bchron", "rcarbon", "oxcAAR") # The packages we would like to have
+# I added dplyer because we might need it later
+package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we would like to have
 
 for (package in package_list){ # for each in the list
   if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
@@ -60,7 +61,7 @@ for (package in package_list){ # for each in the list
 }
 ```
 
-Luckily, all calibration functions are named differently, so there is no overwriting of the functions going on here. We can have all of them side by side.
+Luckily, all calibration functions are named differently, so there is no overwriting of the functions going on here. Only dplyr is masking some functions, but this should not bother us. We can have all of them side by side.
 
 ## Just doing calibration
 
@@ -68,7 +69,7 @@ We might be eager to do our first calibration, so lets start immediatly. We need
 
 ```{r introducing_14_c_date}
 bp <- 4000
-std <- 25
+std <- 50
 ```
 
 With that at hand, we can start calibration:
@@ -85,7 +86,7 @@ str(calDate.rcarbon)
 The result is a list containing
  * $metadata: The metadata for the (uncalibrated) date
  * $grids: The actual calibrated probabilities
- * $calmatrix: A matrix of probability values, one row per calendar year in timeRange and one column per date. Just a different format of $grids. This defaults to NA if not `calMatrix=TRUE` is specified in the call.
+ * $calmatrix: A matrix of probability values, one row per calendar year (BP!) in timeRange and one column per date. Just a different format of $grids. This defaults to NA if not `calMatrix=TRUE` is specified in the call.
 
 So let's plot it 
 ```{r quick_cal_rcarbon_plot}
@@ -117,7 +118,7 @@ So let's plot it
 plot(calDate.Bchron)
 ```
 
-Also nice, lacking the uncal probability and the calibration curve, but highlighting the 95% highest density region (2 sigma range).
+Also nice, lacking the uncal probability and the calibration curve, but highlighting the 95% highest density region (2 sigma range). Note that time is running here from right to left (BP dates).
 
 ### oxcAAR
 
@@ -156,3 +157,89 @@ Want a calibration curve?
 ```{r quick_cal_oxcAAR_calcurve_plot}
 calcurve_plot(calDate.oxcAAR)
 ```
+
+### Multiple dates
+
+So, if you like to calibrate multiple dates, that is also not hard:
+
+```{r cal_multiple_dates}
+calMultiDate.rcarbon <- calibrate(x = c(4000,3000), errors = c(50,25) )
+str(calMultiDate.rcarbon)
+calMultiDate.Bchron <- BchronCalibrate(ages = c(4000,3000), ageSds = c(50,25), calCurves = c("intcal13","intcal13"))
+str(calMultiDate.Bchron)
+calMultiDate.oxcAAR <- oxcalCalibrate(bp = c(4000,3000), std = c(50,25))
+str(calMultiDate.oxcAAR)
+
+```
+
+In case of Bchron, for every date a calibration curve must be given independently. Can be a bit tedious, but one can script that, too.
+
+The result is all the same like when calibrating an individual date, but in every case two results are produce, one for each uncalibrated date. In case of rcarbon, the dates are internally separated, in case of Bchron and oxcAAR, the result is simply is list of calibrated dates. 
+
+How are multiple dates visualised in each package?
+
+```{r cal_multiple_dates_plot}
+plot(calMultiDate.rcarbon)
+plot(calMultiDate.Bchron)
+plot(calMultiDate.oxcAAR)
+```
+
+In case of Bchron there is an individual plot for each date, with oxcAAR both dates are plotted on the same x-axis (time), while rcarbon only returns the first date. With an additional parameter you can convince rcarbon to plot the second date, but all the time only one date per plot.
+
+```{r cal_multiple_dates_plot_rcarbon_plot_second_date}
+plot(calMultiDate.rcarbon, ind = 2)
+```
+
+## Why oxcAAR?
+
+In archaeology, OxCal has become a quasi standard for calibration. One might like that or not, but to make results comparable it is actually not bad to agree on a standard. Calibration itself is not a hard thing to do (we will see that later), but the results of the different implementations might vary. Lets compare (in doing so we shift the dates from oxcAAR by 1950 to make them BP and add 0.5 due to the specific output values of OxCal):
+
+```{r comp_results_packages, echo=F}
+
+plot(calDate.rcarbon$grids$`1`$calBP,calDate.rcarbon$grids$`1`$PrDens, type="l",ylab = "probability", xlab = "cal BP")
+lines(calDate.Bchron$Date1$ageGrid,calDate.Bchron$Date1$densities, col="red")
+lines(1950 - calDate.oxcAAR$`1`$raw_probabilities$dates + 0.5,
+      calDate.oxcAAR$`1`$raw_probabilities$probabilities, col="green")
+legend("bottomright", c("rcarbon", "Bchron", "oxcAAR"), col = c("black", "red", "green"), title = "calibration method", lty=1)
+```
+
+While rcarbon and oxcAAR are quite similar (based on the same algorithm, although OxCal works on 5 years resolution), Bchron results differ.
+
+If we zoom in and just look at the differences:
+
+```{r comp_results_packages_detail, echo=F}
+# 1. Join the results on a common time axis
+## 1.1 Gather rcarbon and Bchron results
+
+all_dates <- c(calDate.Bchron$Date1$ageGrid, calDate.rcarbon$grids$`1`$calBP)
+my_start <- max(all_dates)
+my_end <- min(all_dates)
+
+my_date_sequence <- my_start:my_end
+
+my_compare_df <- data.frame(date = my_date_sequence)
+my_compare_df$Bchron <- full_join(my_compare_df, as.data.frame(calDate.Bchron$Date1), by = c("date" = "ageGrid"))$densities
+
+my_compare_df$rcarbon <- full_join(my_compare_df, calDate.rcarbon$grids$`1`, by = c("date" = "calBP"))$PrDens
+
+## 1.2. oxcAAR result has to be abit shifted due to specific OxCal output
+calDate.oxcAAR_for_compare <- calDate.oxcAAR$`1`$raw_probabilities
+calDate.oxcAAR_for_compare$dates <- 1950 - calDate.oxcAAR_for_compare$dates + 0.5
+
+my_compare_df$oxcAAR <- left_join(my_compare_df, calDate.oxcAAR_for_compare, by = c("date" = "dates"))$probabilities
+
+# oxcal has 5 years resolution, so only use those dates
+my_compare_df <- my_compare_df[my_compare_df$date%%5==0,]
+my_compare_df$rcarbon <- my_compare_df$rcarbon - my_compare_df$oxcAAR
+my_compare_df$Bchron <- my_compare_df$Bchron - my_compare_df$oxcAAR
+my_compare_df$oxcAAR <- 0
+
+plot(my_compare_df$date,my_compare_df$oxcAAR, col="green", ylim = c(-6e-04,6e-04), type="l",ylab = "Difference from OxCal Result", xlab = "cal BP")
+lines(my_compare_df$date,my_compare_df$rcarbon, col="black")
+lines(my_compare_df$date,my_compare_df$Bchron, col="red")
+legend("bottomright", c("rcarbon", "Bchron", "oxcAAR"), col = c("black", "red", "green"), title = "calibration method", lty=1)
+```
+
+Also rcarbon differs slightly from the implementation in OxCal. This might not mean much, and it does not imply that OxCal is actually the correct result, but it means that the different algorithm produce slighly different probabilities.
+
+So, if you like to work with results that are exactly like those who are using OxCal, oxcAAR might be the best option. This especially holds true if you later want to do rather esoteric things like sum calibration. Removing every possible source of mistrust might be relevant in this field, still.
