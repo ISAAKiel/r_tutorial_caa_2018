@@ -55,7 +55,7 @@ package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we woul
 
 for (package in package_list){ # for each in the list
   if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
-    install.packages(package) # if not, install it
+    install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
   }
   library(package,character.only = TRUE) # load package
 }
