@@ -49,6 +49,11 @@ Essentially it is Bchron, rcarbon and oxcAAR!
 So lets start with them and install them if necessary
 
 ```{r install_packages}
+# currently installing the additional_oxcal_commands branch from github
+library(devtools)
+
+devtools::install_github('MartinHinz/oxcAAR', ref="additional_oxcal_commands")
+
 # A bit of magick
 # I added dplyer because we might need it later
 package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we would like to have
@@ -287,35 +292,38 @@ my_sequence
 In the real world you might have the data already present in a convenient format, like csv data exported from Excel.
 
 ```{r functions_for_sequence_calibration}
-R_Phase <- function(r_dates_strings, names='') {
-  paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
-}
+# The following code is only necessary if using the CRAN 1.0.0 version of oxcAAR
+# You might like to checkout the Github version (currently Branch additional_oxcal_commands)
 
-Boundary <- function(names) {
-  paste("Boundary(\"", names, "\");", sep = "")
-}
-
-wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
-  n_phases <- length(phases_strings)
-  if(length(boundary_names)==1) {
-    if(is.na(boundary_names)){
-    boundary_names <- 1:n_phases + 1
-    } else {
-      boundary_names <- rep(boundary_names,n_phases + 1)
-    }
-  }
-  my_result <- character(n_phases*2+1)
-  for(i in 1:n_phases) {
-    my_result[2*i-1] <- Boundary(boundary_names[i])
-    my_result[2*i] <- phases_strings[i]
-  }
-  my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
-  return(my_result)
-}
-
-Sequence <- function(sequence_elements, name='') {
-  paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
-}
+# Phase <- function(r_dates_strings, names='') {
+#   paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
+# }
+# 
+# Boundary <- function(names) {
+#   paste("Boundary(\"", names, "\");", sep = "")
+# }
+# 
+# wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
+#   n_phases <- length(phases_strings)
+#   if(length(boundary_names)==1) {
+#     if(is.na(boundary_names)){
+#     boundary_names <- 1:n_phases + 1
+#     } else {
+#       boundary_names <- rep(boundary_names,n_phases + 1)
+#     }
+#   }
+#   my_result <- character(n_phases*2+1)
+#   for(i in 1:n_phases) {
+#     my_result[2*i-1] <- Boundary(boundary_names[i])
+#     my_result[2*i] <- phases_strings[i]
+#   }
+#   my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
+#   return(my_result)
+# }
+# 
+# Sequence <- function(sequence_elements, name='') {
+#   paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
+# }
 ```
 
 ```{r make_string_for_sequence_calibration}
@@ -323,7 +331,7 @@ Sequence <- function(sequence_elements, name='') {
 test <- by(my_sequence,my_sequence$phase, function(x)
   R_Date(x$name,x$bp,x$std))
 
-phases <- R_Phase(names=c("1","2","3"), r_dates_strings = test)
+phases <- Phase(names=c("1","2","3"), r_dates_strings = test)
 boundary_name <- c("begin","1->2","2->3","end")
 my_sequence_elements <- wrap_in_boundaries(phases, boundary_name)
 
