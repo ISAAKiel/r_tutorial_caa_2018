@@ -17,24 +17,24 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Available Options
 
 * [ArchaeoPhases](https://cran.rstudio.com/web/packages/ArchaeoPhases/index.html)
-  * ![Marie-Anne Vibet](https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
+  * [Marie-Anne Vibet](#https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
   * "Post-Processing of the Markov Chain Simulated by 'ChronoModel', 'Oxcal' or 'BCal'"
   * Not really for calibration itself, has to be done externally
 * [ArchSeries](https://github.com/davidcorton/archSeries)
-  * ![David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
+  * [David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
   * "Frequency time-series tools for archaeology"
   * No calibration options
   * Not on CRAN yet
 * [Bchron](http://cran.rstudio.com/web/packages/Bchron/index.html)
-  * ![Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
+  * [Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
   * "A Bayesian radiocarbon chronology model with R"
   * BchronCalibrate()
 * [rcarbon](https://cran.r-project.org/web/packages/rcarbon/index.html)
-  * ![Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
+  * [Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
   * "Calibration and Analysis of Radiocarbon Dates"
   * calibrate()
 * [oxcAAR](https://cran.r-project.org/web/packages/oxcAAR/index.html)
-  * ![ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
+  * [ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
   * "Interface to 'OxCal' Radiocarbon Calibration"
   * oxcalCalibrate()
 * Hand made (it is actually not that hard)
@@ -50,18 +50,19 @@ So lets start with them and install them if necessary
 
 ```{r install_packages}
 # currently installing the additional_oxcal_commands branch from github
-library(devtools)
+# temporarily deactivated due to airplane mode
+#library(devtools)
 
-devtools::install_github('MartinHinz/oxcAAR', ref="additional_oxcal_commands")
+#devtools::install_github('MartinHinz/oxcAAR', ref="additional_oxcal_commands")
 
 # A bit of magick
 # I added dplyer because we might need it later
 package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we would like to have
 
 for (package in package_list){ # for each in the list
-  if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
-    install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
-  }
+  # if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
+  #   install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
+  # }
   library(package,character.only = TRUE) # load package
 }
 ```
@@ -130,7 +131,9 @@ Also nice, lacking the uncal probability and the calibration curve, but highligh
 oxcAAR needs a bit of extra love before it works. It relies on OxCal as calibration backend, so we have to install it first. Luckily there is a helper for doing that:
 
 ```{r oxcAAR_install_OxCal}
-quickSetupOxcal()
+# temporarily deactivated due to airplane mode
+#quickSetupOxcal()
+oxcAAR::setOxcalExecutablePath("~/OxCal/bin/OxCalLinux")
 ```
 
 Oxcal is installed in your working directory, and the path to the executable is set. With that we might proceed to the calibration:
@@ -295,50 +298,66 @@ In the real world you might have the data already present in a convenient format
 # The following code is only necessary if using the CRAN 1.0.0 version of oxcAAR
 # You might like to checkout the Github version (currently Branch additional_oxcal_commands)
 
-# Phase <- function(r_dates_strings, names='') {
-#   paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
-# }
-# 
-# Boundary <- function(names) {
-#   paste("Boundary(\"", names, "\");", sep = "")
-# }
-# 
-# wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
-#   n_phases <- length(phases_strings)
-#   if(length(boundary_names)==1) {
-#     if(is.na(boundary_names)){
-#     boundary_names <- 1:n_phases + 1
-#     } else {
-#       boundary_names <- rep(boundary_names,n_phases + 1)
-#     }
-#   }
-#   my_result <- character(n_phases*2+1)
-#   for(i in 1:n_phases) {
-#     my_result[2*i-1] <- Boundary(boundary_names[i])
-#     my_result[2*i] <- phases_strings[i]
-#   }
-#   my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
-#   return(my_result)
-# }
-# 
-# Sequence <- function(sequence_elements, name='') {
-#   paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
-# }
+Phase <- function(r_dates_strings, names='') {
+  paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
+}
+
+Boundary <- function(names) {
+  paste("Boundary(\"", names, "\");", sep = "")
+}
+
+wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
+  n_phases <- length(phases_strings)
+  if(length(boundary_names)==1) {
+    if(is.na(boundary_names)){
+    boundary_names <- 1:n_phases + 1
+    } else {
+      boundary_names <- rep(boundary_names,n_phases + 1)
+    }
+  }
+  my_result <- character(n_phases*2+1)
+  for(i in 1:n_phases) {
+    my_result[2*i-1] <- Boundary(boundary_names[i])
+    my_result[2*i] <- phases_strings[i]
+  }
+  my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
+  return(my_result)
+}
+
+Sequence <- function(sequence_elements, name='') {
+  paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
+}
 ```
 
 ```{r make_string_for_sequence_calibration}
 
-test <- by(my_sequence,my_sequence$phase, function(x)
+# make a list of strings, an element per phase with the R_Dates
+phased_dates <- by(my_sequence,my_sequence$phase, function(x)
   R_Date(x$name,x$bp,x$std))
 
-phases <- Phase(names=c("1","2","3"), r_dates_strings = test)
+# Wrap the dates in Phases
+phases <- Phase(names=c("1","2","3"), r_dates_strings = phased_dates)
+
+# make an vector with some names for the boundaries
 boundary_name <- c("begin","1->2","2->3","end")
+
+# wrap the phases in boundaries
 my_sequence_elements <- wrap_in_boundaries(phases, boundary_name)
 
+# Wrap the whole thing in a sequence
 my_oxcal_code <- Sequence(my_sequence_elements, name = "my_sequence")
+
+cat(my_oxcal_code)
+cat()
+# call Oxcal and read and parse the result
 my_result_file <- executeOxcalScript(my_oxcal_code)
 my_result_text <- readOxcalOutput(my_result_file)
-my_result_data <- parseOxcalOutput(my_result_text)
+my_result_data <- parseOxcalOutput(my_result_text, only.R_Date = F)
+
 my_result_data
 plot(my_result_data)
 ```
+
+As you see, now we have the dates calibrated according to the specified model. The unmodelled distributions are given in lighter, the modelled in darker gray. Also the boundaries are displayed.
+
+The graphical output might improve soon, but already now all the essential informations from OxCal can be plotted, and probably more important, accessed via R.

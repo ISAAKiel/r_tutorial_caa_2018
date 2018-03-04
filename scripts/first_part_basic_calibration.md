@@ -15,24 +15,24 @@ editor_options:
 ### Available Options
 
 * [ArchaeoPhases](https://cran.rstudio.com/web/packages/ArchaeoPhases/index.html)
-  * ![Marie-Anne Vibet](https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
+  * [Marie-Anne Vibet](#https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
   * "Post-Processing of the Markov Chain Simulated by 'ChronoModel', 'Oxcal' or 'BCal'"
   * Not really for calibration itself, has to be done externally
 * [ArchSeries](https://github.com/davidcorton/archSeries)
-  * ![David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
+  * [David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
   * "Frequency time-series tools for archaeology"
   * No calibration options
   * Not on CRAN yet
 * [Bchron](http://cran.rstudio.com/web/packages/Bchron/index.html)
-  * ![Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
+  * [Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
   * "A Bayesian radiocarbon chronology model with R"
   * BchronCalibrate()
 * [rcarbon](https://cran.r-project.org/web/packages/rcarbon/index.html)
-  * ![Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
+  * [Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
   * "Calibration and Analysis of Radiocarbon Dates"
   * calibrate()
 * [oxcAAR](https://cran.r-project.org/web/packages/oxcAAR/index.html)
-  * ![ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
+  * [ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
   * "Interface to 'OxCal' Radiocarbon Calibration"
   * oxcalCalibrate()
 * Hand made (it is actually not that hard)
@@ -49,25 +49,19 @@ So lets start with them and install them if necessary
 
 ```r
 # currently installing the additional_oxcal_commands branch from github
-library(devtools)
+# temporarily deactivated due to airplane mode
+#library(devtools)
 
-devtools::install_github('MartinHinz/oxcAAR', ref="additional_oxcal_commands")
-```
+#devtools::install_github('MartinHinz/oxcAAR', ref="additional_oxcal_commands")
 
-```
-## Skipping install of 'oxcAAR' from a github remote, the SHA1 (ac48fe91) has not changed since last install.
-##   Use `force = TRUE` to force installation
-```
-
-```r
 # A bit of magick
 # I added dplyer because we might need it later
 package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we would like to have
 
 for (package in package_list){ # for each in the list
-  if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
-    install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
-  }
+  # if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
+  #   install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
+  # }
   library(package,character.only = TRUE) # load package
 }
 ```
@@ -203,23 +197,13 @@ oxcAAR needs a bit of extra love before it works. It relies on OxCal as calibrat
 
 
 ```r
-quickSetupOxcal()
-```
-
-```
-## Oxcal doesn't seem to be installed. Downloading it now:
-```
-
-```
-## Oxcal download to /tmp/Rtmpab9DRR successful!
+# temporarily deactivated due to airplane mode
+#quickSetupOxcal()
+oxcAAR::setOxcalExecutablePath("~/OxCal/bin/OxCalLinux")
 ```
 
 ```
 ## Oxcal path set!
-```
-
-```
-## NULL
 ```
 
 Oxcal is installed in your working directory, and the path to the executable is set. With that we might proceed to the calibration:
@@ -232,17 +216,18 @@ str(calDate.oxcAAR)
 
 ```
 ## List of 1
-##  $ 1:List of 6
-##   ..$ name             : chr "1"
-##   ..$ bp               : int 4000
-##   ..$ std              : int 50
-##   ..$ cal_curve        :List of 5
+##  $ 1:List of 9
+##   ..$ name                   : chr "1"
+##   ..$ type                   : chr "R_Date"
+##   ..$ bp                     : int 4000
+##   ..$ std                    : int 50
+##   ..$ cal_curve              :List of 5
 ##   .. ..$ name      : chr " IntCal13 atmospheric curve (Reimer et al 2013)"
 ##   .. ..$ resolution: num 5
 ##   .. ..$ bp        : num [1:10001] 46401 46396 46391 46386 46381 ...
 ##   .. ..$ bc        : num [1:10001] -48050 -48044 -48040 -48034 -48030 ...
 ##   .. ..$ sigma     : num [1:10001] 274 274 274 273 273 ...
-##   ..$ sigma_ranges     :List of 3
+##   ..$ sigma_ranges           :List of 3
 ##   .. ..$ one_sigma  :'data.frame':	1 obs. of  3 variables:
 ##   .. .. ..$ start      : num -2572
 ##   .. .. ..$ end        : num -2468
@@ -255,9 +240,23 @@ str(calDate.oxcAAR)
 ##   .. .. ..$ start      : num [1:3] -2860 -2756 -2704
 ##   .. .. ..$ end        : num [1:3] -2805 -2716 -2290
 ##   .. .. ..$ probability: num [1:3] 2.5 0.6 96.6
-##   ..$ raw_probabilities:'data.frame':	158 obs. of  2 variables:
+##   ..$ raw_probabilities      :'data.frame':	158 obs. of  2 variables:
 ##   .. ..$ dates        : num [1:158] -2910 -2904 -2900 -2894 -2890 ...
 ##   .. ..$ probabilities: num [1:158] 0.00 0.00 0.00 7.19e-09 3.59e-08 ...
+##   ..$ posterior_sigma_ranges :List of 3
+##   .. ..$ one_sigma  :'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   .. ..$ two_sigma  :'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   .. ..$ three_sigma:'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   ..$ posterior_probabilities: logi NA
 ##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
 ##  - attr(*, "class")= chr [1:2] "list" "oxcAARCalibratedDatesList"
 ```
@@ -364,17 +363,18 @@ str(calMultiDate.oxcAAR)
 
 ```
 ## List of 2
-##  $ 1:List of 6
-##   ..$ name             : chr "1"
-##   ..$ bp               : int 4000
-##   ..$ std              : int 50
-##   ..$ cal_curve        :List of 5
+##  $ 1:List of 9
+##   ..$ name                   : chr "1"
+##   ..$ type                   : chr "R_Date"
+##   ..$ bp                     : int 4000
+##   ..$ std                    : int 50
+##   ..$ cal_curve              :List of 5
 ##   .. ..$ name      : chr " IntCal13 atmospheric curve (Reimer et al 2013)"
 ##   .. ..$ resolution: num 5
 ##   .. ..$ bp        : num [1:10001] 46401 46396 46391 46386 46381 ...
 ##   .. ..$ bc        : num [1:10001] -48050 -48044 -48040 -48034 -48030 ...
 ##   .. ..$ sigma     : num [1:10001] 274 274 274 273 273 ...
-##   ..$ sigma_ranges     :List of 3
+##   ..$ sigma_ranges           :List of 3
 ##   .. ..$ one_sigma  :'data.frame':	1 obs. of  3 variables:
 ##   .. .. ..$ start      : num -2572
 ##   .. .. ..$ end        : num -2468
@@ -387,21 +387,36 @@ str(calMultiDate.oxcAAR)
 ##   .. .. ..$ start      : num [1:3] -2860 -2756 -2704
 ##   .. .. ..$ end        : num [1:3] -2805 -2716 -2290
 ##   .. .. ..$ probability: num [1:3] 2.5 0.6 96.6
-##   ..$ raw_probabilities:'data.frame':	158 obs. of  2 variables:
+##   ..$ raw_probabilities      :'data.frame':	158 obs. of  2 variables:
 ##   .. ..$ dates        : num [1:158] -2910 -2904 -2900 -2894 -2890 ...
 ##   .. ..$ probabilities: num [1:158] 0.00 0.00 0.00 7.19e-09 3.59e-08 ...
+##   ..$ posterior_sigma_ranges :List of 3
+##   .. ..$ one_sigma  :'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   .. ..$ two_sigma  :'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   .. ..$ three_sigma:'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   ..$ posterior_probabilities: logi NA
 ##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
-##  $ 2:List of 6
-##   ..$ name             : chr "2"
-##   ..$ bp               : int 3000
-##   ..$ std              : int 25
-##   ..$ cal_curve        :List of 5
+##  $ 2:List of 9
+##   ..$ name                   : chr "2"
+##   ..$ type                   : chr "R_Date"
+##   ..$ bp                     : int 3000
+##   ..$ std                    : int 25
+##   ..$ cal_curve              :List of 5
 ##   .. ..$ name      : chr " IntCal13 atmospheric curve (Reimer et al 2013)"
 ##   .. ..$ resolution: num 5
 ##   .. ..$ bp        : num [1:10001] 46401 46396 46391 46386 46381 ...
 ##   .. ..$ bc        : num [1:10001] -48050 -48044 -48040 -48034 -48030 ...
 ##   .. ..$ sigma     : num [1:10001] 274 274 274 273 273 ...
-##   ..$ sigma_ranges     :List of 3
+##   ..$ sigma_ranges           :List of 3
 ##   .. ..$ one_sigma  :'data.frame':	3 obs. of  3 variables:
 ##   .. .. ..$ start      : num [1:3] -1278 -1200 -1137
 ##   .. .. ..$ end        : num [1:3] -1206 -1194 -1134
@@ -414,9 +429,23 @@ str(calMultiDate.oxcAAR)
 ##   .. .. ..$ start      : num [1:2] -1390 -1319
 ##   .. .. ..$ end        : num [1:2] -1336 -1112
 ##   .. .. ..$ probability: num [1:2] 5.5 94.2
-##   ..$ raw_probabilities:'data.frame':	90 obs. of  2 variables:
+##   ..$ raw_probabilities      :'data.frame':	90 obs. of  2 variables:
 ##   .. ..$ dates        : num [1:90] -1440 -1434 -1430 -1424 -1420 ...
 ##   .. ..$ probabilities: num [1:90] 0.00 0.00 0.00 3.43e-08 6.87e-08 ...
+##   ..$ posterior_sigma_ranges :List of 3
+##   .. ..$ one_sigma  :'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   .. ..$ two_sigma  :'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   .. ..$ three_sigma:'data.frame':	0 obs. of  3 variables:
+##   .. .. ..$ start      : num(0) 
+##   .. .. ..$ end        : num(0) 
+##   .. .. ..$ probability: num(0) 
+##   ..$ posterior_probabilities: logi NA
 ##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
 ##  - attr(*, "class")= chr [1:2] "list" "oxcAARCalibratedDatesList"
 ```
@@ -530,112 +559,300 @@ In the real world you might have the data already present in a convenient format
 # The following code is only necessary if using the CRAN 1.0.0 version of oxcAAR
 # You might like to checkout the Github version (currently Branch additional_oxcal_commands)
 
-# Phase <- function(r_dates_strings, names='') {
-#   paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
-# }
-# 
-# Boundary <- function(names) {
-#   paste("Boundary(\"", names, "\");", sep = "")
-# }
-# 
-# wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
-#   n_phases <- length(phases_strings)
-#   if(length(boundary_names)==1) {
-#     if(is.na(boundary_names)){
-#     boundary_names <- 1:n_phases + 1
-#     } else {
-#       boundary_names <- rep(boundary_names,n_phases + 1)
-#     }
-#   }
-#   my_result <- character(n_phases*2+1)
-#   for(i in 1:n_phases) {
-#     my_result[2*i-1] <- Boundary(boundary_names[i])
-#     my_result[2*i] <- phases_strings[i]
-#   }
-#   my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
-#   return(my_result)
-# }
-# 
-# Sequence <- function(sequence_elements, name='') {
-#   paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
-# }
+Phase <- function(r_dates_strings, names='') {
+  paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
+}
+
+Boundary <- function(names) {
+  paste("Boundary(\"", names, "\");", sep = "")
+}
+
+wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
+  n_phases <- length(phases_strings)
+  if(length(boundary_names)==1) {
+    if(is.na(boundary_names)){
+    boundary_names <- 1:n_phases + 1
+    } else {
+      boundary_names <- rep(boundary_names,n_phases + 1)
+    }
+  }
+  my_result <- character(n_phases*2+1)
+  for(i in 1:n_phases) {
+    my_result[2*i-1] <- Boundary(boundary_names[i])
+    my_result[2*i] <- phases_strings[i]
+  }
+  my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
+  return(my_result)
+}
+
+Sequence <- function(sequence_elements, name='') {
+  paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
+}
 ```
 
 
 ```r
-test <- by(my_sequence,my_sequence$phase, function(x)
+# make a list of strings, an element per phase with the R_Dates
+phased_dates <- by(my_sequence,my_sequence$phase, function(x)
   R_Date(x$name,x$bp,x$std))
 
-phases <- Phase(names=c("1","2","3"), r_dates_strings = test)
+# Wrap the dates in Phases
+phases <- Phase(names=c("1","2","3"), r_dates_strings = phased_dates)
+
+# make an vector with some names for the boundaries
 boundary_name <- c("begin","1->2","2->3","end")
+
+# wrap the phases in boundaries
 my_sequence_elements <- wrap_in_boundaries(phases, boundary_name)
 
+# Wrap the whole thing in a sequence
 my_oxcal_code <- Sequence(my_sequence_elements, name = "my_sequence")
+
+cat(my_oxcal_code)
+```
+
+```
+## Sequence("my_sequence")
+## {Boundary("begin");
+## Phase("1"){
+## R_Date("Sample 2", 3640, 28);
+## R_Date("Sample 1", 3340, 33);};
+## Boundary("1->2");
+## Phase("2"){
+## R_Date("Sample 4", 3230, 31);
+## R_Date("Sample 3", 3370, 50);};
+## Boundary("2->3");
+## Phase("3"){
+## R_Date("Sample 6", 3100, 25);
+## R_Date("Sample 5", 3250, 27);};
+## Boundary("end");};
+```
+
+```r
+cat()
+# call Oxcal and read and parse the result
 my_result_file <- executeOxcalScript(my_oxcal_code)
 my_result_text <- readOxcalOutput(my_result_file)
-my_result_data <- parseOxcalOutput(my_result_text)
+my_result_data <- parseOxcalOutput(my_result_text, only.R_Date = F)
+
 my_result_data
 ```
 
 ```
-## List of 6 calibrated dates:
+## List of 14 calibrated dates:
 ## 
-## 	Sample 2
+## =============================
+## 	Boundary: begin
+## =============================
+## 
+## 
+## 
+## unmodelled:                        posterior:
+##                                                                
+##                                      one sigma: 2168 BC - 1954 BC
+##                                      two sigma: 2572 BC - 1907 BC
+##                                    three sigma: 3135 BC - 1894 BC
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	R_Date: Sample 2
+## =============================
+## 
+## 
 ## BP = 3640, std = 28
 ## 
-##   one sigma: 2033 BC - 1950 BC
-##   two sigma: 2130 BC - 1922 BC
-## three sigma: 2136 BC - 1895 BC
+## unmodelled:                        posterior:
+##                                                                
+##     one sigma: 2033 BC - 1950 BC     one sigma: 2024 BC - 1948 BC
+##     two sigma: 2130 BC - 1922 BC     two sigma: 2120 BC - 1902 BC
+##   three sigma: 2136 BC - 1895 BC   three sigma: 2132 BC - 1888 BC
 ## 
 ## Calibrated after:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
-## 	Sample 1
+## =============================
+## 	R_Date: Sample 1
+## =============================
+## 
+## 
 ## BP = 3340, std = 33
 ## 
-##   one sigma: 1684 BC - 1560 BC
-##   two sigma: 1730 BC - 1528 BC
-## three sigma: 1744 BC - 1504 BC
+## unmodelled:                        posterior:
+##                                                                
+##     one sigma: 1684 BC - 1560 BC     one sigma: 1686 BC - 1618 BC
+##     two sigma: 1730 BC - 1528 BC     two sigma: 1740 BC - 1564 BC
+##   three sigma: 1744 BC - 1504 BC   three sigma: 1754 BC - 1530 BC
 ## 
 ## Calibrated after:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
-## 	Sample 4
+## =============================
+## 	Phase: 1
+## =============================
+## 
+## 
+## 
+## unmodelled:                                  
+##                                                                
+##                                    
+##                                    
+##                                    
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	Boundary: 1->2
+## =============================
+## 
+## 
+## 
+## unmodelled:                        posterior:
+##                                                                
+##                                      one sigma: 1646 BC - 1552 BC
+##                                      two sigma: 1688 BC - 1512 BC
+##                                    three sigma: 1735 BC - 1500 BC
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	R_Date: Sample 4
+## =============================
+## 
+## 
 ## BP = 3230, std = 31
 ## 
-##   one sigma: 1526 BC - 1449 BC
-##   two sigma: 1606 BC - 1430 BC
-## three sigma: 1615 BC - 1415 BC
+## unmodelled:                        posterior:
+##                                                                
+##     one sigma: 1526 BC - 1449 BC     one sigma: 1606 BC - 1500 BC
+##     two sigma: 1606 BC - 1430 BC     two sigma: 1614 BC - 1484 BC
+##   three sigma: 1615 BC - 1415 BC   three sigma: 1624 BC - 1454 BC
 ## 
 ## Calibrated after:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
-## 	Sample 3
+## =============================
+## 	R_Date: Sample 3
+## =============================
+## 
+## 
 ## BP = 3370, std = 50
 ## 
-##   one sigma: 1740 BC - 1611 BC
-##   two sigma: 1865 BC - 1520 BC
-## three sigma: 1880 BC - 1499 BC
+## unmodelled:                        posterior:
+##                                                                
+##     one sigma: 1740 BC - 1611 BC     one sigma: 1622 BC - 1526 BC
+##     two sigma: 1865 BC - 1520 BC     two sigma: 1652 BC - 1504 BC
+##   three sigma: 1880 BC - 1499 BC   three sigma: 1704 BC - 1464 BC
 ## 
 ## Calibrated after:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
-## 	Sample 6
+## =============================
+## 	Phase: 2
+## =============================
+## 
+## 
+## 
+## unmodelled:                                  
+##                                                                
+##                                    
+##                                    
+##                                    
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	Boundary: 2->3
+## =============================
+## 
+## 
+## 
+## unmodelled:                        posterior:
+##                                                                
+##                                      one sigma: 1560 BC - 1475 BC
+##                                      two sigma: 1600 BC - 1456 BC
+##                                    three sigma: 1614 BC - 1434 BC
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	R_Date: Sample 6
+## =============================
+## 
+## 
 ## BP = 3100, std = 25
 ## 
-##   one sigma: 1412 BC - 1305 BC
-##   two sigma: 1426 BC - 1292 BC
-## three sigma: 1444 BC - 1260 BC
+## unmodelled:                        posterior:
+##                                                                
+##     one sigma: 1412 BC - 1305 BC     one sigma: 1426 BC - 1325 BC
+##     two sigma: 1426 BC - 1292 BC     two sigma: 1434 BC - 1300 BC
+##   three sigma: 1444 BC - 1260 BC   three sigma: 1492 BC - 1268 BC
 ## 
 ## Calibrated after:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
-## 	Sample 5
+## =============================
+## 	R_Date: Sample 5
+## =============================
+## 
+## 
 ## BP = 3250, std = 27
 ## 
-##   one sigma: 1604 BC - 1460 BC
-##   two sigma: 1610 BC - 1450 BC
-## three sigma: 1620 BC - 1432 BC
+## unmodelled:                        posterior:
+##                                                                
+##     one sigma: 1604 BC - 1460 BC     one sigma: 1524 BC - 1450 BC
+##     two sigma: 1610 BC - 1450 BC     two sigma: 1548 BC - 1432 BC
+##   three sigma: 1620 BC - 1432 BC   three sigma: 1594 BC - 1421 BC
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	Phase: 3
+## =============================
+## 
+## 
+## 
+## unmodelled:                                  
+##                                                                
+##                                    
+##                                    
+##                                    
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	Boundary: end
+## =============================
+## 
+## 
+## 
+## unmodelled:                        posterior:
+##                                                                
+##                                      one sigma: 1414 BC - 1260 BC
+##                                      two sigma: 1442 BC - 974 BC
+##                                    three sigma: 1488 BC - 580 BC
+## 
+## Calibrated after:
+## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
+## 
+## =============================
+## 	Sequence: my_sequence
+## =============================
+## 
+## 
+## 
+## unmodelled:                                  
+##                                                                
+##                                    
+##                                    
+##                                    
 ## 
 ## Calibrated after:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013)
@@ -646,3 +863,11 @@ plot(my_result_data)
 ```
 
 ![](first_part_basic_calibration_files/figure-html/make_string_for_sequence_calibration-1.png)<!-- -->
+
+```r
+plot(my_result_data[[13]])
+```
+
+![](first_part_basic_calibration_files/figure-html/make_string_for_sequence_calibration-2.png)<!-- -->
+
+As you see, now we have the dates calibrated according to the specified model. The unmodelled distributions are given in lighter, the modelled in darker gray.
