@@ -2,7 +2,10 @@
 title: "CAA2018 Tutorial Second Part"
 author: "Clemens Schmid"
 date: "2 März 2018"
-output: html_document
+output: 
+  html_document:
+    toc: TRUE
+    toc_depth: 4
 ---
 
 ```{r setup, include=FALSE}
@@ -21,7 +24,7 @@ c14bazAAR is a R package to download and prepare bulk c14 date collections.
 - c14 dates have high resolution temporal and spatial information (they can be linked to all kind of data -- archaeology, climatology, genetics, linguistics...) 
 - c14 dates are linked to distinct events in human history (they tell stories)
 
-#### An R package?
+#### R package?
 
 - User perspective
     - access many highly different databases with one interface
@@ -47,8 +50,118 @@ c14bazAAR is a R package to download and prepare bulk c14 date collections.
 
 If you know more, add them in [this](https://github.com/ISAAKiel/c14bazAAR/issues/2) issue or join the development of c14bazAAR and start an own pull request.
 
+### Let's get some data
 
-```{r cars}
-summary(cars)
+c14bazAAR offers an individual parser function for every source database.
+
+```{r}
+c14bazAAR:::get_all_parser_functions()
 ```
 
+We can call them to download one specific collection.
+
+```{r}
+library(c14bazAAR)
+
+get_AustArch()
+```
+
+Or two collections that can be merged afterwards. 
+
+```{r}
+adrac <- get_aDRAC()
+radonb <- get_RADONB()
+
+fuse(adrac, radonb)
+```
+
+Or we can download all dates from all databases.
+
+```{r}
+#get_all_dates()
+```
+
+### An own data structure: the c14_date_list
+
+```{r}
+get_RADON() -> dates
+
+dates
+```
+
+A c14_date_list is a modified tibble which is a modified data.frame. It's a S3 class with a custom print function.
+
+```{r}
+class(dates)
+```
+
+We can apply every operation to a c14_date_list that can also be applied to a data.frame, but most functions in c14bazAAR require a c14_date_list. If we apply functions that give back a data.frame or a tibble, then we loose the class tag. We'll see the consequences of this later.
+
+```{r}
+?c14_date_list
+```
+
+The c14_date_list has a defined set of variables (columns) that are arranged in a defined order. `as.c14_date_list()` constructs a c14_date_list from a data.frame or a tibble. It triggers `enforce_types()`, `order_variables()` and `c14bazAAR:::clean_latlon()`.
+
+```{r}
+candidate <- data.frame(
+  c14std = c(30, "20"),
+  country = c("Germany", "Austria"),
+  c14age = c(3000, 2500),
+  stringsAsFactors = F
+)
+
+as.c14_date_list(candidate)
+```
+
+The distinct set of variables and how they relate to the variables in the source databases are documented [here](https://github.com/ISAAKiel/c14bazAAR/blob/master/data-raw/variable_reference.csv). 
+
+```{r}
+variable_reference
+```
+
+### Enhance your c14_date_list: core functions of c14bazAAR
+
+c14bazAAR 1.0.0 offers functions to cover four domains.
+
+**Domains**
+
+- calibration
+- material classification
+- fixing country names
+- marking duplicates
+
+All of these contain certain challenges, mostly caused by the low data quality of the source databases. 
+
+#### calibration
+
+#### material classification
+
+#### fixing country names
+
+#### marking duplicates
+
+### Beyond the c14_date_list: data wrangling and visualisation
+
+### Final challenge: Preparing a dataset (for Martin)
+
+```{r eval = FALSE}
+# preliminary
+hu <- get_all_dates()
+
+hu %>%
+  dplyr::filter(
+    c14age < 7000,
+    c14age > 5200) %>%
+  as.c14_date_list() %>%
+  mark_duplicates() %>%
+  all_country_functions() %>%
+  dplyr::filter(
+    country_final == "Germany"
+  ) -> spu
+
+spu[!is.na(spu$duplicate_group), ] %>%
+  dplyr::group_by(duplicate_group) %>%
+  dplyr::do(head(., n = 1)) %>% dplyr::ungroup() %>%
+  as.c14_date_list() %>% as.sf %>% mapview::mapview()
+```
