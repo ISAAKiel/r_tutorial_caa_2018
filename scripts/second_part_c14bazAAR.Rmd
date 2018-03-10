@@ -11,20 +11,44 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## c14bazAAR
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+c14bazAAR is a R package to download and prepare bulk c14 date collections.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
+### Why is this useful?
+
+#### Radiocarbon dates
+
+- c14 dates are fairly standardised (a pillar of stability in the Bad Data of archaeology)
+- c14 dates have high resolution temporal and spatial information (they can be linked to all kind of data -- archaeology, climatology, genetics, linguistics...) 
+- c14 dates are linked to distinct events in human history (they tell stories)
+
+#### An R package?
+
+- User perspective
+    - access many highly different databases with one interface
+    - reproducibility with scripted data selection
+    - standard data structures for direct access to powerful R tools (tidyverse)
+- Developer perspective
+    - Open Source: examine & improve the implementation and adjust everything for your needs
+    - simple parser development framework to add further databases
+    - embed bulk c14 dates into your own application
+
+### Open Archives
+
+- **14SEA** 14C database for Southeast Europe and Anatolia (10,000–3000 calBC).
+- **aDRAC** Archives des datations radiocarbone d'Afrique centrale by Dirk Seidensticker.
+- **AustArc** A Database of 14C and Luminescence Ages from Archaeological Sites in Australia by Alan N. Williams, Sean Ulm, Mike Smith, Jill Reid
+- **CALPAL** Radiocarbon Database of the CalPal software package by Bernhard Weninger. See nevrome/CalPal-Database for an interface.
+- **CONTEXT** Collection of radiocarbon dates from sites in the Near East and neighboring regions (20.000 - 5.000 calBC) by Utz Böhner and Daniel Schyle.
+- **EUROEVOL** Cultural Evolution of Neolithic Europe Dataset by Katie Manning, Sue Colledge, Enrico Crema, Stephen Shennan and Adrian Timpson.
+- **CARD Upload Template - KITE East Africa v2.1** Radiocarbon dates from eastern Africa in the CARD2.0 format by Colin Courtney Mustaphi, Rob Marchant
+- **RADON** Central European and Scandinavian database of 14C dates for the Neolithic and Early Bronze Age by Dirk Raetzel-Fabian, Martin Furholt, Martin Hinz, Johannes Müller, Christoph Rinne, Karl-Göran Sjögren und Hans-Peter Wotzka.
+- **RADON-B** Database for European 14C dates for the Bronze and Early Iron Age by Jutta Kneisel, Martin Hinz, Christoph Rinne.
+- **...**
+
+If you know more, add them in [this](https://github.com/ISAAKiel/c14bazAAR/issues/2) issue or join the development of c14bazAAR and start an own pull request.
+
 
 ```{r cars}
 summary(cars)
 ```
 
-## Including Plots
-
-You can also embed plots, for example:
-
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
