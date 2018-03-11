@@ -342,10 +342,16 @@ plot(bawue_dates$geom, add = TRUE)
 st_geometry(bawue_dates) <- NULL
 colnames(bawue_dates) <- gsub("data.", "", colnames(bawue_dates))
 
-bawue_dates %>%
+bawue_calibrated <- bawue_dates %>%
+  as.c14_date_list() %>%
+  calibrate(choices = "probdist")
+
+bawue_calibrated %>%
+  unnest() %>%
   dplyr::filter(
-    c14age < 7000,
-    c14age > 5200
+    calage > 2700, calage < 7500
   ) %>%
-  as.c14_date_list()
+  dplyr::group_by(labnr) %>%
+  dplyr::do(head(., n = 1)) %>% 
+  dplyr::ungroup()
 ```
