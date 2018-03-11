@@ -78,7 +78,7 @@ fuse(adrac, radonb)
 Or we can download all dates from all databases.
 
 ```{r}
-#get_all_dates()
+all_dates <- get_all_dates()
 ```
 
 ### An own data structure: the c14_date_list
@@ -212,6 +212,49 @@ material_thesaurus
 ```
 
 #### fixing country names
+
+Selection by country is a valuable mean of filtering especially for those dates without coordinates. Unfortunately the country information in the source databases is not very reliable and the country names are not standardized across (and sometimes even within) databases.
+
+The consequence are wrong filtering results. That's especially annoying for the neolithicRC webapp.
+
+```{r}
+germany <- all_dates %>%
+  dplyr::filter(country == "Germany") %>%
+  as.c14_date_list()
+
+library(mapview)
+
+germany %>% as.sf %>% mapview()
+```
+
+To fix this, we can apply a series of functions: `determine_country_by_coordinates()`, `standardize_country_name()` and `finalize_country_name()`.
+
+`determine_country_by_coordinates()` determines the country with a spatial join to a set of country polygons (`rworldxtra::countriesHigh`). Points that are not within a country polygon are matched to the closest one.
+
+```{r}
+utils::data("countriesHigh", package = "rworldxtra", envir = environment())
+plot(countriesHigh)
+
+germany <- germany %>% determine_country_by_coordinate()
+
+germany_coords <- germany %>%
+  dplyr::filter(country_coord == "Germany") %>%
+  as.c14_date_list()
+
+germany_coords %>% as.sf %>% mapview()
+```
+
+`standardize_country_name()` fixes country names by comparing the values in the country column to a general list of country identifiers (`countrycode::codelist`) and a small manually curated thesaurus for special cases. 
+
+```{r}
+View(head(countrycode::codelist))
+
+country_thesaurus
+
+adrac %>% standardize_country_name() %>% dplyr::select(country, country_thes)
+```
+
+`finalize_country_name()` calls both previous functions and selects a final country name with the following selection hierarchy: country_coord > country_thes > country.
 
 #### marking duplicates
 
