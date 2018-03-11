@@ -183,6 +183,34 @@ calibrated[calibrated$labnr %in% dates_4000_4500, ]
 
 #### material classification
 
+Almost all databases have information about the sample material, but they are not standardized. 
+
+```{r}
+calpal <- get_CalPal() %>% dplyr::sample_n(1000) %>% as.c14_date_list()
+
+unique(calpal$material)
+
+ggplot(calpal, aes(x = material)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+The c14bazAAR function `classify_material()` applies a manually curated thesaurus to unify certain termes to make data selection less tedious. 
+
+```{r}
+calpal_material <- classify_material(calpal)
+
+ggplot(calpal_material, aes(x = material_thes)) +
+  geom_bar() +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1))
+```
+
+The thesaurus is prepared for all entries in all databases that are currently accessible with c14bazAAR. But as soon as new information is entered into the source databases or new source databases are added it needs servicing.
+
+```{r}
+material_thesaurus
+```
+
 #### fixing country names
 
 #### marking duplicates
