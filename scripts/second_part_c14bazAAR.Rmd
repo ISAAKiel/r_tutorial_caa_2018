@@ -135,6 +135,52 @@ All of these contain certain challenges, mostly caused by the low data quality o
 
 #### calibration
 
+The c14 age is not the correct absolute age of a date. To correct the age value we have to apply c14 calibration. c14bazAAR offers a method to individually calibrate all dates in a c14_date_list. The actual calibration is done by `Bchron::BchronCalibrate()`.
+
+```{r}
+dates_head <- as.c14_date_list(dates[1:100,])
+
+calibrate(dates_head)
+```
+
+Unfortunately the result of calibration is per definition not a simple number but a probability distribution. To store this information in a data.frame in R we have to rely on list columns. 
+
+`calibrate` provides two types of output: 
+
+- calprobdistr: A full representation of the probability per year for all years above a certain threshold.     
+- calrange: Only the age ranges of a defined sigma level.  
+
+```{r}
+calibrated <- calibrate(
+  dates_head,
+  choices = c("probdist", "sigmarange"),
+  sigma = 2
+)
+
+head(calibrated$calprobdistr[[1]])
+
+head(calibrated$calrange)
+```
+
+The necessity for list columns makes working with this results more challenging. For example: How do we find the dates of a certain timeframe (4000 - 4500 calBP)?
+
+```{r}
+library(tidyverse)
+library(magrittr)
+
+dates_4000_4500 <- calibrated %>%
+  dplyr::select(labnr, calrange) %>%
+  tidyr::unnest() %>%
+  dplyr::filter(
+    from >= 4000 & from <= 4500 |
+      to >= 4000 & to <= 4500
+  ) %$%
+  labnr %>%
+  unique
+
+calibrated[calibrated$labnr %in% dates_4000_4500, ]
+```
+
 #### material classification
 
 #### fixing country names
