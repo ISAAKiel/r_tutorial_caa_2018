@@ -306,27 +306,46 @@ duplicate_selection[!is.na(duplicate_selection$duplicate_group), ] %>%
   dplyr::ungroup()
 ```
 
-### Beyond the c14_date_list: data wrangling and visualisation
-
 ### Final challenge: Preparing a dataset (for Martin)
 
 ```{r eval = FALSE}
-# preliminary
-hu <- get_all_dates()
+temp <- tempfile()
+utils::download.file(
+  "https://www.lgl-bw.de/lgl-internet/web/sites/default/de/07_Produkte_und_Dienstleistungen/Open_Data_Initiative/Galerien/Dokumente/AX_Gebiet_Bundesland.zip", 
+  temp, 
+  quiet = TRUE
+)
+con <- utils::unzip(
+  temp,
+  exdir = tempdir()
+)
 
-hu %>%
+library(sf)
+
+bawue <- st_read(file.path(tempdir(), "AX_Gebiet_Bundesland.shp"))
+
+plot(bawue$geometry)
+
+southwestern_germany <- germany %>%
+  dplyr::filter(lat < 50, lon < 11, lon > 7.5)
+
+southwestern_germany_sf <- southwestern_germany %>%
+  as.c14_date_list()%>%
+  as.sf %>%
+  st_transform(crs = 25832)
+  
+bawue_dates <- southwestern_germany_sf %>%
+  st_intersection(y = bawue)
+
+plot(bawue_dates$geom, add = TRUE)
+
+st_geometry(bawue_dates) <- NULL
+colnames(bawue_dates) <- gsub("data.", "", colnames(bawue_dates))
+
+bawue_dates %>%
   dplyr::filter(
     c14age < 7000,
-    c14age > 5200) %>%
-  as.c14_date_list() %>%
-  mark_duplicates() %>%
-  all_country_functions() %>%
-  dplyr::filter(
-    country_final == "Germany"
-  ) -> spu
-
-spu[!is.na(spu$duplicate_group), ] %>%
-  dplyr::group_by(duplicate_group) %>%
-  dplyr::do(head(., n = 1)) %>% dplyr::ungroup() %>%
-  as.c14_date_list() %>% as.sf %>% mapview::mapview()
+    c14age > 5200
+  ) %>%
+  as.c14_date_list()
 ```
