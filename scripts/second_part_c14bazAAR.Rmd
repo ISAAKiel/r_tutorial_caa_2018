@@ -258,6 +258,54 @@ adrac %>% standardize_country_name() %>% dplyr::select(country, country_thes)
 
 #### marking duplicates
 
+Combining different source databases causes a lot of dates to appear more than once in the result selection. Also some databases already contain duplicates due to bad maintenance.
+
+```{r}
+duplicate_selection <- all_dates %>% dplyr::sample_n(5000)
+
+duplicate_selection %>%
+  dplyr::group_by(labnr) %>%
+  summarise(n = n()) %$% 
+  table(n)
+```
+
+`mark_duplicates` searches for duplicates in labnrs and marks duplicate groups.
+
+```{r}
+duplicate_selection <- duplicate_selection %>%
+  as.c14_date_list() %>%
+  mark_duplicates()
+
+duplicate_selection$duplicate_group
+
+duplicate_selection %>%
+  dplyr::filter(duplicate_group == 30)
+```
+
+Unfortunately there is no good way to merge dates automatically. Somebody has to check the information and make a decision for one entry or the other based on their research question.
+
+c14bazAAR provides the function `remove_duplicates()`, but it removes a lot of valuable information.
+
+```{r}
+duplicates_removed <- duplicate_selection %>% remove_duplicates()
+
+duplicates_removed %>% 
+  dplyr::filter(duplicate_group == 30)
+
+duplicates_removed %>% 
+  dplyr::filter(duplicate_group == 30) %$%
+  duplicate_remove_log
+```
+
+Another way to get a first understanding on the data without the duplicates is to just keep the first date in every duplicate group.
+
+```{r}
+duplicate_selection[!is.na(duplicate_selection$duplicate_group), ] %>%
+  dplyr::group_by(duplicate_group) %>%
+  dplyr::do(head(., n = 1)) %>% 
+  dplyr::ungroup()
+```
+
 ### Beyond the c14_date_list: data wrangling and visualisation
 
 ### Final challenge: Preparing a dataset (for Martin)
