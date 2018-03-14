@@ -16,7 +16,16 @@ This is an R Markdown document. Markdown is a simple formatting syntax for autho
 When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
 
 ```{r cars}
-summary(cars)
+library(oxcAAR)
+quickSetupOxcal()
+
+bawue_dates_for_oxcaar <- R_Date(bawue_dates$labnr, bawue_dates$c14age, bawue_dates$c14std)
+bawue_sum_code <- oxcal_Sum(bawue_dates_for_oxcaar)
+my_result_file <- executeOxcalScript(bawue_sum_code)
+my_result_text <- readOxcalOutput(my_result_file)
+my_result_data <- parseOxcalOutput(my_result_text, only.R_Date = FALSE, first = TRUE)
+str(my_result_data)
+plot(my_result_data)
 ```
 
 ## Including Plots
