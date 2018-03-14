@@ -344,7 +344,7 @@ colnames(bawue_dates) <- gsub("data.", "", colnames(bawue_dates))
 
 bawue_calibrated <- bawue_dates %>%
   as.c14_date_list() %>%
-  calibrate(choices = "probdist")
+  calibrate(choices = "calprobdistr")
 
 bawue_calibrated %>%
   unnest() %>%
