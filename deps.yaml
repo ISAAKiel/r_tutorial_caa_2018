@@ -11,9 +11,6 @@
   GithubRepo: c14bazAAR
   GithubRef: master
   GithubSHA1: cac7df242d702069a6fb1f06d09530e3fe7906d9
-- Package: tidyverse
-  Repository: CRAN
-  Version: 1.2.1
 - Package: magrittr
   Repository: CRAN
   Version: '1.5'
@@ -26,7 +23,64 @@
 - Package: tidyr
   Repository: CRAN
   Version: 0.8.0
-- ~
 - Package: countrycode
   Repository: CRAN
   Version: 1.00.0
+- Package: readr
+  Repository: CRAN
+  Version: 1.1.1
+- Package: devtools
+  Repository: CRAN
+  Version: 1.13.5
+- Package: sp
+  Repository: CRAN
+  Version: 1.2-7
+- Package: SPARQL
+  Repository: CRAN
+  Version: '1.16'
+- Package: Bchron
+  Repository: CRAN
+  Version: 4.2.7
+- Package: sf
+  Repository: CRAN
+  Version: 0.6-0
+- Package: pbapply
+  Repository: CRAN
+  Version: 1.3-4
+- Package: plyr
+  Repository: CRAN
+  Version: 1.8.4
+- Package: tibble
+  Repository: CRAN
+  Version: 1.4.2
+- Package: stringdist
+  Repository: CRAN
+  Version: 0.9.4.6
+- Package: readxl
+  Repository: CRAN
+  Version: 1.0.0
+- Package: dataverse
+  Repository: CRAN
+  Version: 0.2.0
+- Package: RCurl
+  Repository: CRAN
+  Version: 1.95-4.10
+- Package: crayon
+  Repository: CRAN
+  Version: 1.3.4
+- Package: testthat
+  Repository: CRAN
+  Version: 2.0.0
+- Package: lwgeom
+  Repository: CRAN
+  Version: 0.1-4
+- Package: rgeos
+  Repository: CRAN
+  Version: 0.3-26
+- Package: rworldmap
+  Repository: CRAN
+  Version: 1.3-6
+- Package: rworldxtra
+  Repository: CRAN
+  Version: 1.01
+- ~
