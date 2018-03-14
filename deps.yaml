@@ -83,4 +83,7 @@
 - Package: rworldxtra
   Repository: CRAN
   Version: 1.01
+- Package: tidyverse
+  Repository: CRAN
+  Version: 1.2.1
 - ~
