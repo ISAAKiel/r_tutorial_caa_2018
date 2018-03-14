@@ -38,19 +38,23 @@ The development of this tutorial is a dynamic process that we would like to shar
 * [RStudio](https://www.rstudio.com/products/rstudio/download/)
 * R Packages: We need a whole selection of R packages. Please use the following script to install all of them at once or [check out](https://github.com/ISAAKiel/r_tutorial_caa_2018/blob/master/deps.yaml) what exactly what we need. If the installations script fails and you're not on a windows client please check for missing system dependencies (see below).
 
-```{r}
+```r
 # the automagic package has the purpose to install many packages automatically
-install.packages("automagick")
+install.packages("automagic")
 # we need to download a list of packages (deps.yaml) from this github repository
 tempyml <- file.path(tempdir(), "deps.yaml")
-utils::download.file("https://raw.githubusercontent.com/ISAAKiel/r_tutorial_caa_2018/master/deps.yaml", tempyml, quiet = TRUE)
+utils::download.file(
+  "https://raw.githubusercontent.com/ISAAKiel/r_tutorial_caa_2018/master/deps.yaml",
+  tempyml, 
+  quiet = TRUE
+)
 # now we can trigger the installation of all necessary packages
 automagic::install_deps_file(tempdir())
 ```
 
 * Software libraries (only for linux and mac users): Some of the packages we use require more other software that has to be installed on your system. It's tricky to estimate what exactly we need. Here's a script to install everything on a  ubuntu trusty sytem. If you're on another distribution or a mac you have to find the suitable packages for your os.
 
-```{bash}
+```shell
 apt-get update
 
 apt-get install --no-install-recommends \
