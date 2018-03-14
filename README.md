@@ -36,13 +36,26 @@ The development of this tutorial is a dynamic process that we would like to shar
 	* The latest installation files: [The Comprehensive R Archive Network](http://ftp5.gwdg.de/pub/misc/cran/)
 	* Windows: [Installation tutorial](https://github.com/eScienceCenter/R-Tutorial_20170707/blob/master/Installationsanleitung_Windows.pdf) | [Installation tutorial video](https://www.youtube.com/watch?v=P783pgSd-ik)
 * [RStudio](https://www.rstudio.com/products/rstudio/download/)
-* R Packages: We need a lot of them. Please use the following script to install all of them at once. If the installations script fails and you're not on a windows client please check for missing system dependencies (see below).
+* R Packages: We need a lot of them. Please use the following code to install all of them at once. If the installation fails and you're not on a windows client please check for missing system dependencies (see below).
 
 ```r
-
+# basics - every R user should have those installed
+install.packages(c("devtools", "tidyverse", "magrittr"))
+# our packages c14bazAAR and oxcAAR and all of their dependencies
+devtools::install_github(
+  repo = c("ISAAKiel/c14bazAAR", "ISAAKiel/oxcAAR"),
+  dependencies = TRUE,
+  upgrade_dependencies = TRUE
+)
+# if you install mapview and sf with their dependencies you'll end up with a nice GIS setup
+install.packages(
+  c("mapview", "sf"),
+  dependencies = TRUE,
+  upgrade_dependencies = TRUE
+)
 ```
 
-* Software libraries (only for linux and mac users): Some of the packages we use require more other software that has to be installed on your system. It's tricky to estimate what exactly we need. Here's a script to install everything on a  ubuntu trusty sytem. If you're on another distribution or a mac you have to find the suitable packages for your os.
+* Software libraries (only for linux and mac users): Some of the packages we use require more other software that has to be installed on your system. It's tricky to estimate what exactly we need. Here's a script to install everything on an ubuntu trusty sytem. If you're on an other linux distribution or a mac you have to find the suitable packages for your os.
 
 ```shell
 apt-get update
@@ -50,16 +63,16 @@ apt-get update
 apt-get install --no-install-recommends \
   libcurl4-openssl-dev \
   libssl-dev \
-  libsqlite3-dev \
   libxml2-dev \
   udunits-bin \
   libproj-dev \
   libgeos-dev \
   libgdal-dev \
   libudunits2-dev \
-  qpdf \
-  vim
+  qpdf
 ```
+
+* [Rtools](https://cran.r-project.org/bin/windows/Rtools/) (only for windows users): It might not be necessary for this workshop, but it's inevitable if you want to use R beyond very basic applications.
 
 ### Data
 In the course of the tutorial we will 'create' small amounts of data ourselves or download them from publicly accessible repositories. It is not necessary to import data beforehand. However, it may make sense to bring your own data with you so that the steps can be carried out using this data.
