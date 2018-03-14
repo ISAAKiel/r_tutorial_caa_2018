@@ -19,24 +19,56 @@ This repository is used to provide documents and scripts for the Turorial.
 
 ## Basic informations
 
-The tutorial is based on the participants using their own laptops. We have experienced that maximum learning success is achieved when the participants do not work on a foreign system in a computer pool but with their own devices. The [Basic version of R](https://www.r-project.org/) should be installed for the tutorial (see links below). As a development environment we will use [RStudio](https://www.rstudio.com/products/rstudio/) which should also be installed. Additionally some packages are needed. These can be installed automatically by a small R-script, which we will provide shortly before the tutorial. Lecturers can provide support for Windows, Mac and Linux systems if necessary. However, we urge each participant to install the necessary software before the tutorial. If you have any questions or problems, please contact us before the workshop.  
+### Time & Location
+
+This workshop will take place Monday 19 March, 13:45-17:45, in Seminar Room F, in the Geographical Institute building at [Rümelinstraße 19-23, 72074 Tübingen](https://www.google.de/maps/place/R%C3%BCmelinstra%C3%9Fe+19,+T%C3%BCbingen/@48.5239808,9.0538022,17z/data=!3m1!4b1!4m5!3m4!1s0x4799e52b54533365:0xe1677f7088d7e408!8m2!3d48.5239808!4d9.0559909).
+
+### Preparations
+
+The tutorial is based on the participants using their own laptops. We have experienced that maximum learning success is achieved when the participants do not work on a foreign system in a computer pool but with their own devices. The [Basic version of R](https://www.r-project.org/) should be installed for the tutorial (see links below). As a development environment we will use [RStudio](https://www.rstudio.com/products/rstudio/) which should also be installed. Additionally some system libraries and R packages are needed (see below). Lecturers can provide support for Windows, Mac and Linux systems if necessary. However, we urge each participant to install the necessary software before the tutorial. If you have any questions or problems, please contact us before the workshop.  
 
 Further information as well as all scripts, data and instructions will be available here: https://github.com/ISAAKiel/r_tutorial_caa_2018
 The development of this tutorial is a dynamic process that we would like to share and disclose through Github. Please note that data, scripts and texts in this "work-in-progress"archive may be incomplete and some scripts may not yet be functional. 
 
 ## Required software
+
 * [R: The R Project for Statistical Computing](https://www.r-project.org/):
 	* The latest installation files: [The Comprehensive R Archive Network](http://ftp5.gwdg.de/pub/misc/cran/)
+	* Windows: [Installation tutorial](https://github.com/eScienceCenter/R-Tutorial_20170707/blob/master/Installationsanleitung_Windows.pdf) | [Installation tutorial video](https://www.youtube.com/watch?v=P783pgSd-ik)
 * [RStudio](https://www.rstudio.com/products/rstudio/download/)
-* Packages: *we will offer an R-script shortly before the tutorial, which automatically installs the necessary packages; instructions follow*
+* R Packages: We need a whole selection of R packages. Please use the following script to install all of them at once or [check out](https://github.com/ISAAKiel/r_tutorial_caa_2018/blob/master/deps.yaml) what exactly what we need. If the installations script fails and you're not on a windows client please check for missing system dependencies (see below).
 
-[The installation of the required software (under Windows) is described here](https://github.com/eScienceCenter/R-Tutorial_20170707/blob/master/Installationsanleitung_Windows.pdf) (German).
+```{r}
+# the automagic package has the purpose to install many packages automatically
+install.packages("automagick")
+# we need to download a list of packages (deps.yaml) from this github repository
+tempyml <- file.path(tempdir(), "deps.yaml")
+utils::download.file("https://raw.githubusercontent.com/ISAAKiel/r_tutorial_caa_2018/master/deps.yaml", tempyml, quiet = TRUE)
+# now we can trigger the installation of all necessary packages
+automagic::install_deps_file(tempdir())
+```
 
-There is also an ISAAK video Tutorial available:
+* Software libraries (only for linux and mac users): Some of the packages we use require more other software that has to be installed on your system. It's tricky to estimate what exactly we need. Here's a script to install everything on a  ubuntu trusty sytem. If you're on another distribution or a mac you have to find the suitable packages for your os.
 
-[![[IBR-en 001] Install R and R Studio on Windows](https://img.youtube.com/vi/P783pgSd-ik/0.jpg)](https://www.youtube.com/watch?v=P783pgSd-ik)
+```{bash}
+apt-get update -qq \
+  && apt-get install -t unstable -y --no-install-recommends \
+    libcurl4-openssl-dev \
+    libssl-dev \
+    libsqlite3-dev \
+    libxml2-dev \
+    qpdf \
+    vim \
+    git \
+    udunits-bin \
+    libproj-dev \
+    libgeos-dev \
+    libgdal-dev \
+    libudunits2-dev \
+    libsodium-dev
+```
 
-## Data
+### Data
 In the course of the tutorial we will 'create' small amounts of data ourselves or download them from publicly accessible repositories. It is not necessary to import data beforehand. However, it may make sense to bring your own data with you so that the steps can be carried out using this data.
 
 ## Copyright and Licence
