@@ -52,14 +52,13 @@ apt-get install --no-install-recommends \
   libssl-dev \
   libsqlite3-dev \
   libxml2-dev \
-  qpdf \
-  vim \
-  git \
   udunits-bin \
   libproj-dev \
   libgeos-dev \
   libgdal-dev \
-  libudunits2-dev
+  libudunits2-dev \
+  qpdf \
+  vim
 ```
 
 ### Data
