@@ -51,21 +51,21 @@ automagic::install_deps_file(tempdir())
 * Software libraries (only for linux and mac users): Some of the packages we use require more other software that has to be installed on your system. It's tricky to estimate what exactly we need. Here's a script to install everything on a  ubuntu trusty sytem. If you're on another distribution or a mac you have to find the suitable packages for your os.
 
 ```{bash}
-apt-get update -qq \
-  && apt-get install -t unstable -y --no-install-recommends \
-    libcurl4-openssl-dev \
-    libssl-dev \
-    libsqlite3-dev \
-    libxml2-dev \
-    qpdf \
-    vim \
-    git \
-    udunits-bin \
-    libproj-dev \
-    libgeos-dev \
-    libgdal-dev \
-    libudunits2-dev \
-    libsodium-dev
+apt-get update
+
+apt-get install --no-install-recommends \
+  libcurl4-openssl-dev \
+  libssl-dev \
+  libsqlite3-dev \
+  libxml2-dev \
+  qpdf \
+  vim \
+  git \
+  udunits-bin \
+  libproj-dev \
+  libgeos-dev \
+  libgdal-dev \
+  libudunits2-dev
 ```
 
 ### Data
