@@ -55,10 +55,10 @@ If you know more, add them in [this](https://github.com/ISAAKiel/c14bazAAR/issue
 c14bazAAR offers an individual parser function for every source database.
 
 ```{r}
-c14bazAAR:::get_all_parser_functions()
+c14bazAAR:::get_all_parser_functions()[1:2]
 ```
 
-We can call them to download one specific collection.
+We can one of them to download one specific collection.
 
 ```{r}
 library(c14bazAAR)
@@ -66,7 +66,7 @@ library(c14bazAAR)
 get_AustArch()
 ```
 
-Or two collections that can be merged afterwards. 
+Or two or more of them to merge them afterwards. 
 
 ```{r}
 adrac <- get_aDRAC()
@@ -75,7 +75,7 @@ radonb <- get_RADONB()
 fuse(adrac, radonb)
 ```
 
-Or we can download all dates from all databases.
+We can even download all dates from all databases.
 
 ```{r}
 all_dates <- get_all_dates()
@@ -89,7 +89,7 @@ get_RADON() -> dates
 dates
 ```
 
-A c14_date_list is a modified tibble which is a modified data.frame. It's a S3 class with a custom print function.
+A c14_date_list is a modified tibble (which is a modified data.frame). It's a S3 class with a custom print function.
 
 ```{r}
 class(dates)
@@ -101,7 +101,7 @@ We can apply every operation to a c14_date_list that can also be applied to a da
 ?c14_date_list
 ```
 
-The c14_date_list has a defined set of variables (columns) that are arranged in a defined order. `as.c14_date_list()` constructs a c14_date_list from a data.frame or a tibble. It triggers `enforce_types()`, `order_variables()` and `c14bazAAR:::clean_latlon()`.
+The c14_date_list has a defined set of variables (columns) that are arranged in a defined order. There's no explicit constructor function, but you can use `as.c14_date_list()` to create a c14_date_list from a data.frame or a tibble. `as.c14_date_list()` triggers `enforce_types()`, `order_variables()` and `c14bazAAR:::clean_latlon()`.
 
 ```{r}
 candidate <- data.frame(
@@ -122,9 +122,7 @@ variable_reference
 
 ### Enhance your c14_date_list: core functions of c14bazAAR
 
-c14bazAAR 1.0.0 offers functions to cover four domains.
-
-**Domains**
+c14bazAAR 1.0.0 offers functions to cover four domains:
 
 - calibration
 - material classification
@@ -183,12 +181,14 @@ calibrated[calibrated$labnr %in% dates_4000_4500, ]
 
 #### material classification
 
-Almost all databases have information about the sample material, but they are not standardized. 
+Almost all databases have information about the sample material, but the terminology isn't standardized (across and within databases). 
 
 ```{r}
 calpal <- get_CalPal() %>% dplyr::sample_n(1000) %>% as.c14_date_list()
 
 unique(calpal$material)
+
+library(ggplot2)
 
 ggplot(calpal, aes(x = material)) +
   geom_bar() +
@@ -211,9 +211,9 @@ The thesaurus is prepared for all entries in all databases that are currently ac
 material_thesaurus
 ```
 
-#### fixing country names
+#### better country information
 
-Selection by country is a valuable mean of filtering especially for those dates without coordinates. Unfortunately the country information in the source databases is not very reliable and the country names are not standardized across (and sometimes even within) databases.
+Selection by country is a valuable mean of filtering especially for dates without coordinates. Unfortunately the country information in the source databases is not very reliable and the country names are not standardized across (and sometimes even within) databases.
 
 The consequence are wrong filtering results. That's especially annoying for the neolithicRC webapp.
 
@@ -229,10 +229,14 @@ germany %>% as.sf %>% mapview()
 
 To fix this, we can apply a series of functions: `determine_country_by_coordinates()`, `standardize_country_name()` and `finalize_country_name()`.
 
+##### country by coordinates
+
 `determine_country_by_coordinates()` determines the country with a spatial join to a set of country polygons (`rworldxtra::countriesHigh`). Points that are not within a country polygon are matched to the closest one.
 
 ```{r}
 utils::data("countriesHigh", package = "rworldxtra", envir = environment())
+
+library(sp)
 plot(countriesHigh)
 
 germany <- germany %>% determine_country_by_coordinate()
@@ -244,14 +248,21 @@ germany_coords <- germany %>%
 germany_coords %>% as.sf %>% mapview()
 ```
 
+##### fixing country names
+
 `standardize_country_name()` fixes country names by comparing the values in the country column to a general list of country identifiers (`countrycode::codelist`) and a small manually curated thesaurus for special cases. 
 
-```{r}
-View(head(countrycode::codelist))
+```{r, echo = FALSE}
+View(head(countrycode::codelist)) %>% class
+```
 
+```{r}
 country_thesaurus
 
-adrac %>% standardize_country_name() %>% dplyr::select(country, country_thes)
+adrac %>% 
+  standardize_country_name() %>% 
+  dplyr::select(country, country_thes) %>% 
+  unique
 ```
 
 `finalize_country_name()` calls both previous functions and selects a final country name with the following selection hierarchy: country_coord > country_thes > country.
@@ -265,7 +276,7 @@ duplicate_selection <- all_dates %>% dplyr::sample_n(5000)
 
 duplicate_selection %>%
   dplyr::group_by(labnr) %>%
-  summarise(n = n()) %$% 
+  dplyr::summarise(n = n()) %$% 
   table(n)
 ```
 
@@ -276,7 +287,7 @@ duplicate_selection <- duplicate_selection %>%
   as.c14_date_list() %>%
   mark_duplicates()
 
-duplicate_selection$duplicate_group
+duplicate_selection$duplicate_group %>% unique
 
 duplicate_selection %>%
   dplyr::filter(duplicate_group == 30)
@@ -284,7 +295,7 @@ duplicate_selection %>%
 
 Unfortunately there is no good way to merge dates automatically. Somebody has to check the information and make a decision for one entry or the other based on their research question.
 
-c14bazAAR provides the function `remove_duplicates()`, but it removes a lot of valuable information.
+c14bazAAR provides the function `remove_duplicates()` (aka "The annihilator"), but it removes also a lot of valuable information.
 
 ```{r}
 duplicates_removed <- duplicate_selection %>% remove_duplicates()
