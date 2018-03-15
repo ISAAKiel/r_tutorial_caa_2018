@@ -36,7 +36,7 @@ The development of this tutorial is a dynamic process that we would like to shar
 	* The latest installation files: [The Comprehensive R Archive Network](http://ftp5.gwdg.de/pub/misc/cran/)
 	* Windows: [Installation tutorial](https://github.com/eScienceCenter/R-Tutorial_20170707/blob/master/Installationsanleitung_Windows.pdf) | [Installation tutorial video](https://www.youtube.com/watch?v=P783pgSd-ik)
 * [RStudio](https://www.rstudio.com/products/rstudio/download/)
-* R Packages: We need a lot of them. Please use the following code to install all of them at once. If the installation fails and you're not on a windows client please check for missing system dependencies (see below).
+* R Packages: We need a lot of them. Please use the following code to install all of them at once. If the installation fails and you're not on a Windows client please check for missing system dependencies (see below).
 
 ```r
 # install magrittr to get the %>% operator
@@ -65,6 +65,7 @@ if (identical(missing_packages, character(0))) {
 } else {
   install.packages(missing_packages, repos = "https://ftp.gwdg.de/pub/misc/cran/")
 }
+# if you're on Windows you have to rely on packages with prebuilt binaries (except you have the Rtools installed)
 
 # finally: our packages c14bazAAR and oxcAAR
 devtools::install_github(
@@ -72,7 +73,7 @@ devtools::install_github(
 )
 ```
 
-* Software libraries (only for linux and mac users): Some of the packages we use require more other software that has to be installed on your system. It's tricky to estimate what exactly we need. Here's a script to install everything on an ubuntu trusty sytem. If you're on an other linux distribution or a mac you have to find the suitable packages for your os.
+* Software libraries (only for Linux and Mac users): Some of the packages we use require more other software that has to be installed on your system. It's tricky to estimate what exactly we need. Here's a script to install everything on an ubuntu trusty sytem. This could work also on other ubuntu and debian versions and their derivatives. If you're on an other Linux distribution you have to find the suitable packages for your OS. For Mac [this](https://github.com/r-spatial/sf#macos) should get you started.
 
 ```shell
 apt-get update
@@ -89,7 +90,7 @@ apt-get install --no-install-recommends \
   qpdf
 ```
 
-* [Rtools](https://cran.r-project.org/bin/windows/Rtools/) (only for windows users): It might not be necessary for this workshop, but it's inevitable if you want to use R beyond very basic applications.
+* [Rtools](https://cran.r-project.org/bin/windows/Rtools/) (only for Windows users): It might not be necessary for this workshop, but it's inevitable if you want to use R beyond very basic applications.
 
 ### Data
 In the course of the tutorial we will 'create' small amounts of data ourselves or download them from publicly accessible repositories. It is not necessary to import data beforehand. However, it may make sense to bring your own data with you so that the steps can be carried out using this data.
