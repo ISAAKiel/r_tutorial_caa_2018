@@ -63,7 +63,7 @@ missing_packages <- necessary_packages[necessary_packages %in% already_installed
 if (identical(missing_packages, character(0))) { 
   message("everything already installed") 
 } else {
-  install.packages(. , repos = "https://ftp.gwdg.de/pub/misc/cran/")
+  install.packages(missing_packages, repos = "https://ftp.gwdg.de/pub/misc/cran/")
 }
 
 # finally: our packages c14bazAAR and oxcAAR
