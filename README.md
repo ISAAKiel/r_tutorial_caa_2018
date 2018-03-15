@@ -39,19 +39,36 @@ The development of this tutorial is a dynamic process that we would like to shar
 * R Packages: We need a lot of them. Please use the following code to install all of them at once. If the installation fails and you're not on a windows client please check for missing system dependencies (see below).
 
 ```r
-# basics - every R user should have those installed
-install.packages(c("devtools", "tidyverse", "magrittr"))
-# our packages c14bazAAR and oxcAAR and all of their dependencies
-devtools::install_github(
-  repo = c("ISAAKiel/c14bazAAR", "ISAAKiel/oxcAAR"),
-  dependencies = TRUE,
-  upgrade_dependencies = TRUE
+# install magrittr to get the %>% operator
+install.packages(c("magrittr"), repos = "https://ftp.gwdg.de/pub/misc/cran/")
+library(magrittr)
+
+# packages we (might) need for this workshop
+necessary_packages <- c(
+  "Bchron", "countrycode", "crayon", "dataverse", "devtools", 
+  "dplyr", "jsonlite", "knitr", "lwgeom", "magrittr", "maps", 
+  "maptools", "mapview", "pbapply", "plyr", "RCurl", "raster", 
+  "readr", "readxl", "rgdal", "rgeos", "rmarkdown", "rworldxtra", 
+  "sf", "sp", "spatstat", "stringdist", "stringr", "testthat", 
+  "tibble", "tidyr", "tidyverse"
 )
-# if you install mapview and sf with their dependencies you'll end up with a nice GIS setup
-install.packages(
-  c("mapview", "sf"),
-  dependencies = TRUE,
-  upgrade_dependencies = TRUE
+
+# create a list of already installed packages
+already_installed_packages <- installed.packages() %>% as.data.frame %$% Package %>% as.character
+
+# determine missing packages
+missing_packages <- necessary_packages[necessary_packages %in% already_installed_packages %>% `!`]
+
+# install them
+if (identical(missing_packages, character(0))) { 
+  message("everything already installed") 
+} else {
+  install.packages(. , repos = "https://ftp.gwdg.de/pub/misc/cran/")
+}
+
+# finally: our packages c14bazAAR and oxcAAR
+devtools::install_github(
+  repo = c("ISAAKiel/c14bazAAR", "ISAAKiel/oxcAAR")
 )
 ```
 
