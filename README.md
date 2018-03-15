@@ -30,13 +30,13 @@ The tutorial is based on the participants using their own laptops. We have exper
 Further information as well as all scripts, data and instructions will be available here: https://github.com/ISAAKiel/r_tutorial_caa_2018
 The development of this tutorial is a dynamic process that we would like to share and disclose through Github. Please note that data, scripts and texts in this "work-in-progress"archive may be incomplete and some scripts may not yet be functional. 
 
-## Required software
+#### Required software
 
 * [R: The R Project for Statistical Computing](https://www.r-project.org/):
 	* The latest installation files: [The Comprehensive R Archive Network](http://ftp5.gwdg.de/pub/misc/cran/)
 	* Windows: [Installation tutorial](https://github.com/eScienceCenter/R-Tutorial_20170707/blob/master/Installationsanleitung_Windows.pdf) | [Installation tutorial video](https://www.youtube.com/watch?v=P783pgSd-ik)
 * [RStudio](https://www.rstudio.com/products/rstudio/download/)
-* R Packages: We need a lot of them. Please use the following code to install all of them at once. If the installation fails and you're not on a Windows client please check for missing system dependencies (see below).
+* R Packages: We need a lot of them. Please use the following code to install all of them at once. If the installation fails and you're not on a Windows client check for missing system dependencies (see below). If you're on a Windows client check if the failing package has no prebuilt binaries yet and if you therefore have to fall back to an older package version.
 
 ```r
 # install magrittr to get the %>% operator
@@ -65,7 +65,8 @@ if (identical(missing_packages, character(0))) {
 } else {
   install.packages(missing_packages, repos = "https://ftp.gwdg.de/pub/misc/cran/")
 }
-# if you're on Windows you have to rely on packages with prebuilt binaries (except you have the Rtools installed)
+# if you're on Windows you have to rely on packages with prebuilt binaries 
+# (except you have the Rtools installed)
 
 # finally: our packages c14bazAAR and oxcAAR
 devtools::install_github(
