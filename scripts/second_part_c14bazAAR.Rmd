@@ -10,7 +10,16 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, cache = F)
+```
+
+```{r, results='hide', message=FALSE, warning=FALSE}
+library(tidyverse)
+library(magrittr)
+library(mapview)
+library(sp)
+library(sf)
+library(c14bazAAR)
 ```
 
 ## c14bazAAR
@@ -59,15 +68,13 @@ c14bazAAR offers an individual parser function for every source database.
 c14bazAAR:::get_all_parser_functions()[1:2]
 ```
 
-We can one of them to download one specific collection.
+We can use one of them to download one specific collection.
 
 ```{r}
-library(c14bazAAR)
-
 get_AustArch()
 ```
 
-Or two or more of them to merge them afterwards. 
+Or two or more to merge them afterwards. 
 
 ```{r}
 adrac <- get_aDRAC()
@@ -78,15 +85,11 @@ fuse(adrac, radonb)
 
 We can even download all dates from all databases.
 
-```{r}
+```{r, results = 'hide'}
 all_dates <- get_all_dates()
 ```
 
 ### An own data structure: the c14_date_list
-
-```{r}
-all_dates
-```
 
 A c14_date_list is a modified tibble (which is a modified data.frame). It's a S3 class with a custom print function.
 
@@ -94,7 +97,7 @@ A c14_date_list is a modified tibble (which is a modified data.frame). It's a S3
 class(all_dates)
 ```
 
-We can apply every operation to a c14_date_list that can also be applied to a data.frame, but most functions in c14bazAAR require a c14_date_list. If we apply functions that give back a data.frame or a tibble, then we loose the class tag. We'll see the consequences of this later.
+We can apply every operation to a c14_date_list that can also be applied to a data.frame, but most functions in c14bazAAR require a c14_date_list. If we apply functions that give back a data.frame or a tibble, then we lose the class tag. We'll see the consequences of this later.
 
 ```{r}
 ?c14_date_list
@@ -132,12 +135,16 @@ All of these contain certain challenges, mostly caused by the low data quality o
 
 #### calibration
 
-The c14 age is not the correct absolute age of a date. To correct the age value we have to apply c14 calibration. c14bazAAR offers a method to individually calibrate all dates in a c14_date_list. The actual calibration is done by `Bchron::BchronCalibrate()`.
+The c14 age is not the correct absolute age of a date. To correct the age value we have to apply ^14^C calibration. c14bazAAR offers a method to individually calibrate all dates in a c14_date_list. The actual calibration is done by `Bchron::BchronCalibrate()`.
+
+```{r, results = 'hide'}
+dates_selection <- as.c14_date_list(all_dates[10000:10100,])
+
+calibrate(dates_selection)
+```
 
 ```{r}
-dates_head <- as.c14_date_list(dates[1:100,])
-
-calibrate(dates_head)
+dates_selection
 ```
 
 Unfortunately the result of calibration is per definition not a simple number but a probability distribution. To store this information in a data.frame in R we have to rely on list columns. 
@@ -147,24 +154,22 @@ Unfortunately the result of calibration is per definition not a simple number bu
 - calprobdistr: A full representation of the probability per year for all years above a certain threshold.     
 - calrange: Only the age ranges of a defined sigma level.  
 
-```{r}
+```{r, results = 'hide'}
 calibrated <- calibrate(
-  dates_head,
+  dates_selection,
   choices = c("calprobdistr", "calrange"),
   sigma = 2
 )
+```
 
+```{r}
 head(calibrated$calprobdistr[[1]])
-
 head(calibrated$calrange)
 ```
 
 The necessity for list columns makes working with this results more challenging. For example: How do we find the dates of a certain timeframe (4000 - 4500 calBP)?
 
 ```{r}
-library(tidyverse)
-library(magrittr)
-
 dates_4000_4500 <- calibrated %>%
   dplyr::select(labnr, calrange) %>%
   tidyr::unnest() %>%
@@ -183,11 +188,11 @@ calibrated[calibrated$labnr %in% dates_4000_4500, ]
 Almost all databases have information about the sample material, but the terminology isn't standardized (across and within databases). 
 
 ```{r}
-calpal <- get_CalPal() %>% dplyr::sample_n(1000) %>% as.c14_date_list()
+calpal <- get_CalPal() %>% 
+  dplyr::sample_n(1000) %>% 
+  as.c14_date_list()
 
 unique(calpal$material)
-
-library(ggplot2)
 
 ggplot(calpal, aes(x = material)) +
   geom_bar() +
@@ -196,7 +201,7 @@ ggplot(calpal, aes(x = material)) +
 
 The c14bazAAR function `classify_material()` applies a manually curated thesaurus to unify certain termes to make data selection less tedious. 
 
-```{r}
+```{r, message=FALSE}
 calpal_material <- classify_material(calpal)
 
 ggplot(calpal_material, aes(x = material_thes)) +
@@ -221,8 +226,6 @@ germany <- all_dates %>%
   dplyr::filter(country == "Germany") %>%
   as.c14_date_list()
 
-library(mapview)
-
 germany %>% as.sf %>% mapview()
 ```
 
@@ -235,7 +238,6 @@ To fix this, we can apply a series of functions: `determine_country_by_coordinat
 ```{r}
 utils::data("countriesHigh", package = "rworldxtra", envir = environment())
 
-library(sp)
 plot(countriesHigh)
 
 germany <- germany %>% determine_country_by_coordinate()
@@ -251,13 +253,15 @@ germany_coords %>% as.sf %>% mapview()
 
 `standardize_country_name()` fixes country names by comparing the values in the country column to a general list of country identifiers (`countrycode::codelist`) and a small manually curated thesaurus for special cases. 
 
-```{r, echo = FALSE}
-View(head(countrycode::codelist))
+```{r}
+head(countrycode::codelist[,c(5, 10, 20)])
 ```
 
 ```{r}
 country_thesaurus
+```
 
+```{r, message = FALSE}
 adrac %>% 
   standardize_country_name() %>% 
   dplyr::select(country, country_thes) %>% 
@@ -266,7 +270,7 @@ adrac %>%
 
 `finalize_country_name()` calls both previous functions and selects a final country name with the following selection hierarchy: country_coord > country_thes > country.
 
-#### marking duplicates
+#### marking and removing duplicates
 
 Combining different source databases causes a lot of dates to appear more than once in the result selection. Also some databases already contain duplicates due to bad maintenance.
 
@@ -281,11 +285,13 @@ duplicate_selection %>%
 
 `mark_duplicates` searches for duplicates in labnrs and marks duplicate groups.
 
-```{r}
+```{r, results = 'hide'}
 duplicate_selection <- duplicate_selection %>%
   as.c14_date_list() %>%
   mark_duplicates()
+```
 
+```{r}
 duplicate_selection$duplicate_group %>% unique
 
 duplicate_selection %>%
@@ -319,8 +325,6 @@ duplicate_selection[!is.na(duplicate_selection$duplicate_group), ] %>%
 ### Final challenge: Preparing a dataset (for Martin)
 
 ```{r eval = FALSE}
-library(sf)
-
 #### download shapefile from Baden-Württemberg ####
 
 # create a tempfile
@@ -372,6 +376,8 @@ sw_germany_dates_sf <- sw_germany_dates_4 %>%
 
 plot(sw_germany_dates_sf$geom, add = TRUE, col = "black")
 
+#### intersect shape with dates ####
+
 # spatial intersection to find dates within Baden-Württemberg
 bawue_dates_sf <- sw_germany_dates_sf %>%
   st_intersection(y = bawue_sf)
@@ -383,12 +389,14 @@ bawue_dates <- bawue_dates_sf
 st_geometry(bawue_dates) <- NULL
 colnames(bawue_dates) <- gsub("data.", "", colnames(bawue_dates))
 
+#### final selection by timeframe
+
 # calibrate the dates in this selection
 bawue_calibrated <- bawue_dates %>%
   as.c14_date_list() %>%
   calibrate(choices = "calprobdistr")
 
-# select dates within 
+# select dates by timeframe
 bawue_final <- bawue_calibrated %>%
   unnest() %>%
   dplyr::filter(
