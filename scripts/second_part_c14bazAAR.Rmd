@@ -357,7 +357,7 @@ bawue_calibrated <- bawue_dates %>%
   as.c14_date_list() %>%
   calibrate(choices = "calprobdistr")
 
-bawue_calibrated %>%
+bawue_final <- bawue_calibrated %>%
   unnest() %>%
   dplyr::filter(
     calage > 2700, calage < 7500
@@ -365,4 +365,5 @@ bawue_calibrated %>%
   dplyr::group_by(labnr) %>%
   dplyr::do(head(., n = 1)) %>% 
   dplyr::ungroup()
+
 ```
