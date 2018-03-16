@@ -320,43 +320,76 @@ duplicate_selection[!is.na(duplicate_selection$duplicate_group), ] %>%
 ### Final challenge: Preparing a dataset (for Martin)
 
 ```{r eval = FALSE}
+library(sf)
+
+#### download shapefile from Baden-Württemberg ####
+
+# create a tempfile
 temp <- tempfile()
+
+# download archive with shapefile
 utils::download.file(
   "https://www.lgl-bw.de/lgl-internet/web/sites/default/de/07_Produkte_und_Dienstleistungen/Open_Data_Initiative/Galerien/Dokumente/AX_Gebiet_Bundesland.zip", 
   temp, 
   quiet = TRUE
 )
-con <- utils::unzip(
+
+# unzip archive in tempdir
+utils::unzip(
   temp,
   exdir = tempdir()
 )
 
-library(sf)
-
-bawue <- st_read(file.path(tempdir(), "AX_Gebiet_Bundesland.shp"))
+# read shapefile into R
+bawue_sf <- st_read(file.path(tempdir(), "AX_Gebiet_Bundesland.shp"))
 
 plot(bawue$geometry)
 
-southwestern_germany <- germany %>%
-  dplyr::filter(lat < 50, lon < 11, lon > 7.5)
+#### prepare date dataset ####
 
-southwestern_germany_sf <- southwestern_germany %>%
+# reduce date selection (to reduce calculation time)
+sw_germany_dates_1 <- all_dates %>%
+  dplyr::filter(lat < 50, lat > 47, lon < 11, lon > 7.5)
+  
+sw_germany_dates_2 <- sw_germany_dates_1 %>%
+  as.c14_date_list() %>%
+  classify_material() %>%
+  dplyr::filter(material_thes != "charcoal", material_thes != "wood")
+
+sw_germany_dates_3 <- sw_germany_dates_2 %>%
+  as.c14_date_list() %>%
+  determine_country_by_coordinate() %>%
+  dplyr::filter(country_coord == "Germany")
+
+sw_germany_dates_4 <- sw_germany_dates_3 %>%
+  as.c14_date_list() %>%
+  remove_duplicates()
+  
+# make c14_date_list a sf object and transform coordinates to ETRS89 / UTM zone 32N reference system
+sw_germany_dates_sf <- sw_germany_dates_4 %>%
   as.c14_date_list()%>%
   as.sf %>%
   st_transform(crs = 25832)
-  
-bawue_dates <- southwestern_germany_sf %>%
-  st_intersection(y = bawue)
 
-plot(bawue_dates$geom, add = TRUE)
+plot(sw_germany_dates_sf$geom, add = TRUE, col = "black")
 
+# spatial intersection to find dates within Baden-Württemberg
+bawue_dates_sf <- sw_germany_dates_sf %>%
+  st_intersection(y = bawue_sf)
+
+plot(bawue_dates_sf$geom, add = TRUE, col = "red")
+
+# transform this sf file to a data.frame
+bawue_dates <- bawue_dates_sf
 st_geometry(bawue_dates) <- NULL
 colnames(bawue_dates) <- gsub("data.", "", colnames(bawue_dates))
 
+# calibrate the dates in this selection
 bawue_calibrated <- bawue_dates %>%
   as.c14_date_list() %>%
   calibrate(choices = "calprobdistr")
 
+# select dates within 
 bawue_final <- bawue_calibrated %>%
   unnest() %>%
   dplyr::filter(
@@ -365,5 +398,4 @@ bawue_final <- bawue_calibrated %>%
   dplyr::group_by(labnr) %>%
   dplyr::do(head(., n = 1)) %>% 
   dplyr::ungroup()
-
 ```
