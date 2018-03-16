@@ -15,7 +15,7 @@ To fully take advantage of the practical part of the workshop you must bring you
 
 The workshop is primarily aimed at archaeologists who already have basic knowledge of R and radiocarbon data. Nevertheless, participants who do not yet have this experience are also welcome.
 
-This repository is used to provide documents and scripts for the Turorial.
+The development of this tutorial is a dynamic process that we would like to share and disclose through Github. Please note that data, scripts and texts in this "work-in-progress" archive may be incomplete and some scripts may not yet be functional. 
 
 ## Basic informations
 
@@ -26,9 +26,6 @@ This workshop will take place Monday 19 March, 13:45-17:45, in Seminar Room F, i
 ### Preparations
 
 The tutorial is based on the participants using their own laptops. We have experienced that maximum learning success is achieved when the participants do not work on a foreign system in a computer pool but with their own devices. The [Basic version of R](https://www.r-project.org/) should be installed for the tutorial (see links below). As a development environment we will use [RStudio](https://www.rstudio.com/products/rstudio/) which should also be installed. Additionally some system libraries and R packages are needed (see below). Lecturers can provide support for Windows, Mac and Linux systems if necessary. However, we urge each participant to install the necessary software before the tutorial. If you have any questions or problems, please contact us before the workshop.  
-
-Further information as well as all scripts, data and instructions will be available here: https://github.com/ISAAKiel/r_tutorial_caa_2018
-The development of this tutorial is a dynamic process that we would like to share and disclose through Github. Please note that data, scripts and texts in this "work-in-progress"archive may be incomplete and some scripts may not yet be functional. 
 
 #### Required software
 
@@ -93,7 +90,8 @@ apt-get install --no-install-recommends \
 
 * [Rtools](https://cran.r-project.org/bin/windows/Rtools/) (only for Windows users): It might not be necessary for this workshop, but it's inevitable if you want to use R beyond very basic applications.
 
-### Data
+#### Data
+
 In the course of the tutorial we will 'create' small amounts of data ourselves or download them from publicly accessible repositories. It is not necessary to import data beforehand. However, it may make sense to bring your own data with you so that the steps can be carried out using this data.
 
 ## Copyright and Licence
