@@ -4,6 +4,7 @@ author: "Clemens Schmid"
 date: "2 März 2018"
 output: 
   html_document:
+    keep_md: true
     toc: TRUE
     toc_depth: 4
 ---
@@ -84,15 +85,13 @@ all_dates <- get_all_dates()
 ### An own data structure: the c14_date_list
 
 ```{r}
-get_RADON() -> dates
-
-dates
+all_dates
 ```
 
 A c14_date_list is a modified tibble (which is a modified data.frame). It's a S3 class with a custom print function.
 
 ```{r}
-class(dates)
+class(all_dates)
 ```
 
 We can apply every operation to a c14_date_list that can also be applied to a data.frame, but most functions in c14bazAAR require a c14_date_list. If we apply functions that give back a data.frame or a tibble, then we loose the class tag. We'll see the consequences of this later.
@@ -253,7 +252,7 @@ germany_coords %>% as.sf %>% mapview()
 `standardize_country_name()` fixes country names by comparing the values in the country column to a general list of country identifiers (`countrycode::codelist`) and a small manually curated thesaurus for special cases. 
 
 ```{r, echo = FALSE}
-View(head(countrycode::codelist)) %>% class
+View(head(countrycode::codelist))
 ```
 
 ```{r}
@@ -343,7 +342,7 @@ utils::unzip(
 # read shapefile into R
 bawue_sf <- st_read(file.path(tempdir(), "AX_Gebiet_Bundesland.shp"))
 
-plot(bawue$geometry)
+plot(bawue_sf$geometry)
 
 #### prepare date dataset ####
 
@@ -399,5 +398,5 @@ bawue_final <- bawue_calibrated %>%
   dplyr::do(head(., n = 1)) %>% 
   dplyr::ungroup()
 
-saveRDS(bawue_final, file = "bawue_final.RDS")
+#saveRDS(bawue_final, file = "bawue_final.RDS")
 ```
