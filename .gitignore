@@ -5,3 +5,6 @@
 
 # rendered documents
 *.html
+
+# rendering caches
+*_cache/
