@@ -398,9 +398,6 @@ bawue_final <- bawue_calibrated %>%
   dplyr::group_by(labnr) %>%
   dplyr::do(head(., n = 1)) %>% 
   dplyr::ungroup()
-<<<<<<< HEAD
-=======
 
 saveRDS(bawue_final, file = "bawue_final.RDS")
->>>>>>> 58a2207735f423d383a2a612a3e047e169b6e7bd
 ```
