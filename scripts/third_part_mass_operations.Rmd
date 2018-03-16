@@ -58,8 +58,63 @@ So, we get back a object of oxcAARCalibratedDatesList with one entry, the sum. L
 plot(my_result_data)
 ```
 
-Nice wiggly and wobbly. But how much can we trust that pattern? Could it come just from the shape of the calibration curve, or from random effects from the date distribution? Lets find out using simulation!
+Nice wiggly and wobbly. But a lot of the peaks might come from individual sites, that received more attention or more money to make ^14^C dates. To cope with this, there is the technique called binning: Each site is weighted with 1, so gets the same influence in the final sum calibraton, regardless of how many ^14^C dates originally came from it. The assumption behind this is that all sites represent equal amount of activity (eg. people). This is questionable, if very heterogenous sites are considered. Best is to concentrate on one time interval and a comparable selection of sites (eg. only settlements). Lets see how it works:
 
+## Binning
+
+At first we have to produce 1 R_Date string (partly containing multiple dates) per site. Than we have to wrap each string into a sum command. Than we have to wrap the whole in a sum command, like above:
+
+```{r}
+# First, we add another column to our data, containing the R_Date string for that date:
+
+bawue_final %<>% rowwise() %>%            # for each date (=row)
+  mutate(oxcal_string = R_Date(labnr,     # add a column containing the R_Date code
+                               c14age,
+                               c14std)) %>%
+  ungroup()                               # remove the rowwise grouping again
+
+bawue_final %>% select(sourcedb,labnr,c14age, c14std, oxcal_string)
+```
+
+Now we have for all dates the generated r code in the dataset. Next step is to gather them per site:
+
+```{r}
+# Then we clue them together per site
+
+site_sums <- bawue_final %>%       # Take the dates
+  group_by(site) %>%               # per site do
+  summarise(
+    oxcal_string = paste(
+      oxcal_string, 
+      collapse = "\n")             # join the strings by a line break
+  )
+site_sums
+```
+
+Result is a data set with the site and the joined oxcal code for all the dates that belong to that site. Now we wrap each string per site into a sum, and the whole in a overarching sum command.
+
+```{r}
+bawue_sum_code <- site_sums %$%                               # finally take the strings
+  oxcal_Sum(oxcal_string = oxcal_string, name = site) %>%     # wrap them in sum
+  paste(collapse = "\n") %>%                                  # join the strings by line break
+  oxcal_Sum(name = "outer sum")                               # wrap the whole thing in a sum
+
+cat(substr(bawue_sum_code,1,253))
+```
+
+Here we go. Now we have an outer sum, and inner sums per site. The rest is as above, we feed our code into OxCal and plot the result.
+
+```{r}
+my_result_data <- bawue_sum_code %>%
+  executeOxcalScript() %>%
+  readOxcalOutput() %>%
+  parseOxcalOutput(only.R_Date = FALSE, first = TRUE)
+
+plot(my_result_data)
+```
+
+Definitely a different picture. But how much can we trust that pattern? Could it come just from the shape of the calibration curve, or from random effects from the date distribution? Lets find out using simulation!
+ 
 ## Using simulations to qualify sum calibration
 
 For constructing confidence intervalls using Monte Carlo methods (simulations), we at first have to agree on the null hypothesis. The so called 'UCL approach' is to make a generalised linear regression of the data and use this (a kind of smooth general trend) as null model.
@@ -86,7 +141,7 @@ Now we have kind of a background, which we can compare to our real world data. I
 
 ```{r}
 # for the sake of simplicity, we extract the raw probabilities of our result
-my_sum_result <- my_result_data$` Sum `$raw_probabilities
+my_sum_result <- my_result_data$` outer sum `$raw_probabilities
 
 plot(
   my_sum_result$dates,
