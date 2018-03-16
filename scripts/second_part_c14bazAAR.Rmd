@@ -224,8 +224,11 @@ The consequence are wrong filtering results. That's especially annoying for the 
 ```{r}
 germany <- all_dates %>%
   dplyr::filter(country == "Germany") %>%
+  dplyr::sample_n(100) %>%
   as.c14_date_list()
+```
 
+```{r, eval = FALSE}
 germany %>% as.sf %>% mapview()
 ```
 
@@ -245,7 +248,9 @@ germany <- germany %>% determine_country_by_coordinate()
 germany_coords <- germany %>%
   dplyr::filter(country_coord == "Germany") %>%
   as.c14_date_list()
+```
 
+```{r, eval = FALSE}
 germany_coords %>% as.sf %>% mapview()
 ```
 
