@@ -20,6 +20,7 @@ Having received the dates from the c14bazAAR, we might like to analyse the demog
 ```{r}
 library(dplyr)
 library(oxcAAR)
+library(magrittr)
 quickSetupOxcal()
 
 # Taking the output of the c14bazAAR and transform them into OxCal code.
@@ -173,8 +174,6 @@ ggplot() +
 Now we get an idea. But there are still all this tiny wiggles, and most people (eg. Williams 2012) suggest using smoothing to get rid of them. We also do that! OxCal results come usually with a 5 years resolution, so if we apply a moving window average with a with of 10, we get a 50 years smoothing window.
 
 ```{r}
-library(magrittr)
-
 ma <- function(x,n=10){stats::filter(x,rep(1/n,n), sides=2)} # The smoothing function
 
 my_sum_result %<>% mutate(probabilities_smoothed = ma(probabilities))
