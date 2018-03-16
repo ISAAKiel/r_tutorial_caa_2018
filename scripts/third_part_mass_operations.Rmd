@@ -3,6 +3,8 @@ title: "CAA2018 Tutorial Third Part"
 author: "Martin Hinz"
 date: "2 März 2018"
 output: html_document
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r setup, include=FALSE}
@@ -11,29 +13,44 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Mass Operations on 14C Data
 
-This is an R Markdown document. Markdown is a simple formatting syntax for authoring HTML, PDF, and MS Word documents. For more details on using R Markdown see <http://rmarkdown.rstudio.com>.
+Having received the dates from the c14bazAAR, we might like to analyse the demographic development of Baden-Würtemberg between 7500 and 2700 cal BC. For doing so, one first step might be to produce a sum calibration of those dates.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
-```{r cars}
+```{r}
 library(oxcAAR)
 quickSetupOxcal()
 
-bawue_dates_for_oxcaar <- R_Date(bawue_dates$labnr, bawue_dates$c14age, bawue_dates$c14std)
-bawue_sum_code <- oxcal_Sum(bawue_dates_for_oxcaar)
-my_result_file <- executeOxcalScript(bawue_sum_code)
-my_result_text <- readOxcalOutput(my_result_file)
-my_result_data <- parseOxcalOutput(my_result_text, only.R_Date = FALSE, first = TRUE)
+# Taking the output of the c14bazAAR and transform them into OxCal code.
+
+bawue_dates_for_oxcaar <- R_Date(bawue_dates$labnr,
+                                 bawue_dates$c14age,
+                                 bawue_dates$c14std) 
+
+bawue_sum_code <- oxcal_Sum(bawue_dates_for_oxcaar) # Wrap it into a sum command
+```
+
+Looking to the beginning of that code:
+
+```{r}
+cat(str_sub(bawue_sum_code,1,255))
+```
+
+Looks like proper OxCal code. Than, lets use it for sum calibration
+
+```{r}
+my_result_data <- bawue_sum_code %>%
+  executeOxcalScript() %>%
+  readOxcalOutput() %>%
+  parseOxcalOutput(only.R_Date = FALSE, first = TRUE)
+
 str(my_result_data)
+```
+
+So, we get back a object of oxcAARCalibratedDatesList with one entry, the sum. Lets plot that:
+```{r}
 plot(my_result_data)
 ```
 
-## Including Plots
+Nice wiggly and wobbly. But how much can we trust that pattern? Could it come just from the shape of the calibration curve, or from random effects from the date distribution? Lets find out using simulation!
 
-You can also embed plots, for example:
+## Using simulations to qualify sum calibration
 
-```{r pressure, echo=FALSE}
-plot(pressure)
-```
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
