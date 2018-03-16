@@ -366,4 +366,5 @@ bawue_final <- bawue_calibrated %>%
   dplyr::do(head(., n = 1)) %>% 
   dplyr::ungroup()
 
+saveRDS(bawue_final, file = "bawue_final.RDS")
 ```
