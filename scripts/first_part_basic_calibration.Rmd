@@ -17,24 +17,24 @@ knitr::opts_chunk$set(echo = TRUE)
 ### Available Options
 
 * [ArchaeoPhases](https://cran.rstudio.com/web/packages/ArchaeoPhases/index.html)
-  * [Marie-Anne Vibet](#https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
+  * ![Marie-Anne Vibet](https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
   * "Post-Processing of the Markov Chain Simulated by 'ChronoModel', 'Oxcal' or 'BCal'"
   * Not really for calibration itself, has to be done externally
 * [ArchSeries](https://github.com/davidcorton/archSeries)
-  * [David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
+  * ![David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
   * "Frequency time-series tools for archaeology"
   * No calibration options
   * Not on CRAN yet
 * [Bchron](http://cran.rstudio.com/web/packages/Bchron/index.html)
-  * [Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
+  * ![Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
   * "A Bayesian radiocarbon chronology model with R"
   * BchronCalibrate()
 * [rcarbon](https://cran.r-project.org/web/packages/rcarbon/index.html)
-  * [Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
+  * ![Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
   * "Calibration and Analysis of Radiocarbon Dates"
   * calibrate()
 * [oxcAAR](https://cran.r-project.org/web/packages/oxcAAR/index.html)
-  * [ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
+  * ![ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
   * "Interface to 'OxCal' Radiocarbon Calibration"
   * oxcalCalibrate()
 * Hand made (it is actually not that hard)

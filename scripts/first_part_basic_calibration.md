@@ -15,24 +15,24 @@ editor_options:
 ### Available Options
 
 * [ArchaeoPhases](https://cran.rstudio.com/web/packages/ArchaeoPhases/index.html)
-  * [Marie-Anne Vibet](#https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
+  * ![Marie-Anne Vibet](https://avatars3.githubusercontent.com/u/15785508?s=40&v=4) Marie-Anne Vibet
   * "Post-Processing of the Markov Chain Simulated by 'ChronoModel', 'Oxcal' or 'BCal'"
   * Not really for calibration itself, has to be done externally
 * [ArchSeries](https://github.com/davidcorton/archSeries)
-  * [David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
+  * ![David Orton](https://avatars3.githubusercontent.com/u/7224976?s=40&v=4) David Orton
   * "Frequency time-series tools for archaeology"
   * No calibration options
   * Not on CRAN yet
 * [Bchron](http://cran.rstudio.com/web/packages/Bchron/index.html)
-  * [Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
+  * ![Andrew Parnell](https://avatars3.githubusercontent.com/u/3535973?s=40&v=4) Andrew Parnell
   * "A Bayesian radiocarbon chronology model with R"
   * BchronCalibrate()
 * [rcarbon](https://cran.r-project.org/web/packages/rcarbon/index.html)
-  * [Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
+  * ![Andrew Bevan](https://avatars3.githubusercontent.com/u/3984941?s=40&v=4) Andrew Bevan
   * "Calibration and Analysis of Radiocarbon Dates"
   * calibrate()
 * [oxcAAR](https://cran.r-project.org/web/packages/oxcAAR/index.html)
-  * [ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
+  * ![ISAAK](https://avatars3.githubusercontent.com/u/19709572?s=40&v=4) ISAAK
   * "Interface to 'OxCal' Radiocarbon Calibration"
   * oxcalCalibrate()
 * Hand made (it is actually not that hard)
@@ -236,7 +236,7 @@ quickSetupOxcal()
 ```
 
 ```
-## Oxcal download to /tmp/Rtmpbiiurf successful!
+## Oxcal download to /tmp/RtmpyVzCBN successful!
 ```
 
 ```
@@ -635,17 +635,14 @@ my_result_data
 ##                                posterior:
 ## 
 ##                                one sigma
-##                                2178 BC - 1954 BC (68.2%)
+##                                2170 BC - 1955 BC (68.2%)
 ## 
 ##                                two sigma
-##                                2622 BC - 2614 BC (0.1%)
-##                                2603 BC - 2592 BC (0.2%)
-##                                2583 BC - 1900 BC (95.1%)
+##                                2570 BC - 1904 BC (95.4%)
 ## 
 ##                                three sigma
-##                                3181 BC - 3096 BC (0.4%)
-##                                3078 BC - 3050 BC (0.1%)
-##                                3040 BC - 1895 BC (99.2%)
+##                                3082 BC - 3030 BC (0.2%)
+##                                3020 BC - 1894 BC (99.5%)
 ## 
 ## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
@@ -661,11 +658,11 @@ my_result_data
 ## unmodelled:                    posterior:
 ## 
 ## one sigma                      one sigma
-## 2033 BC - 1950 BC (68.2%)      2024 BC - 1948 BC (68.2%)
+## 2033 BC - 1950 BC (68.2%)      2023 BC - 1948 BC (68.2%)
 ## 
 ## two sigma                      two sigma
-## 2130 BC - 2084 BC (14.6%)      2119 BC - 2090 BC (5.1%)
-## 2050 BC - 1922 BC (80.8%)      2045 BC - 1900 BC (90.3%)
+## 2130 BC - 2084 BC (14.6%)      2117 BC - 2092 BC (4.4%)
+## 2050 BC - 1922 BC (80.8%)      2044 BC - 1899 BC (91%)
 ## 
 ## three sigma                    three sigma
 ## 2136 BC - 1895 BC (99.7%)      2132 BC - 1888 BC (99.7%)
@@ -688,9 +685,9 @@ my_result_data
 ## 1580 BC - 1560 BC (10%)        
 ## 
 ## two sigma                      two sigma
-## 1730 BC - 1718 BC (2.4%)       1741 BC - 1710 BC (11.6%)
-## 1692 BC - 1528 BC (93%)        1697 BC - 1594 BC (80.5%)
-##                                1584 BC - 1563 BC (3.3%)
+## 1730 BC - 1718 BC (2.4%)       1741 BC - 1710 BC (11.9%)
+## 1692 BC - 1528 BC (93%)        1697 BC - 1595 BC (80.4%)
+##                                1584 BC - 1564 BC (3.1%)
 ## 
 ## three sigma                    three sigma
 ## 1744 BC - 1504 BC (99.7%)      1754 BC - 1530 BC (99.7%)
@@ -717,7 +714,7 @@ my_result_data
 ##                                1646 BC - 1552 BC (68.2%)
 ## 
 ##                                two sigma
-##                                1687 BC - 1513 BC (95.4%)
+##                                1688 BC - 1514 BC (95.4%)
 ## 
 ##                                three sigma
 ##                                1734 BC - 1498 BC (99.7%)
@@ -736,9 +733,9 @@ my_result_data
 ## unmodelled:                    posterior:
 ## 
 ## one sigma                      one sigma
-## 1526 BC - 1449 BC (68.2%)      1606 BC - 1580 BC (27.1%)
-##                                1560 BC - 1550 BC (7%)
-##                                1544 BC - 1500 BC (34.1%)
+## 1526 BC - 1449 BC (68.2%)      1606 BC - 1579 BC (28.4%)
+##                                1560 BC - 1550 BC (6.4%)
+##                                1544 BC - 1500 BC (33.3%)
 ## 
 ## two sigma                      two sigma
 ## 1606 BC - 1580 BC (8.6%)       1614 BC - 1486 BC (95.4%)
@@ -761,16 +758,16 @@ my_result_data
 ## unmodelled:                    posterior:
 ## 
 ## one sigma                      one sigma
-## 1740 BC - 1708 BC (15.1%)      1624 BC - 1598 BC (14.7%)
-## 1699 BC - 1611 BC (53.1%)      1588 BC - 1526 BC (53.5%)
+## 1740 BC - 1708 BC (15.1%)      1624 BC - 1597 BC (15.7%)
+## 1699 BC - 1611 BC (53.1%)      1587 BC - 1526 BC (52.5%)
 ## 
 ## two sigma                      two sigma
 ## 1865 BC - 1847 BC (1.5%)       1652 BC - 1504 BC (95.4%)
 ## 1772 BC - 1520 BC (93.9%)      
 ## 
 ## three sigma                    three sigma
-## 1880 BC - 1499 BC (99.7%)      1704 BC - 1490 BC (99.5%)
-##                                1478 BC - 1463 BC (0.2%)
+## 1880 BC - 1499 BC (99.7%)      1703 BC - 1490 BC (99.5%)
+##                                1478 BC - 1464 BC (0.2%)
 ## 
 ## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
@@ -791,7 +788,7 @@ my_result_data
 ##                                posterior:
 ## 
 ##                                one sigma
-##                                1561 BC - 1476 BC (68.2%)
+##                                1562 BC - 1478 BC (68.2%)
 ## 
 ##                                two sigma
 ##                                1600 BC - 1456 BC (95.4%)
@@ -813,15 +810,15 @@ my_result_data
 ## unmodelled:                    posterior:
 ## 
 ## one sigma                      one sigma
-## 1412 BC - 1379 BC (32.6%)      1425 BC - 1376 BC (60.3%)
-## 1341 BC - 1305 BC (35.6%)      1336 BC - 1324 BC (7.9%)
+## 1412 BC - 1379 BC (32.6%)      1426 BC - 1376 BC (61%)
+## 1341 BC - 1305 BC (35.6%)      1336 BC - 1324 BC (7.2%)
 ## 
 ## two sigma                      two sigma
-## 1426 BC - 1292 BC (95.4%)      1433 BC - 1300 BC (95.4%)
+## 1426 BC - 1292 BC (95.4%)      1434 BC - 1300 BC (95.4%)
 ## 
 ## three sigma                    three sigma
-## 1444 BC - 1260 BC (99.7%)      1492 BC - 1477 BC (0.3%)
-##                                1454 BC - 1268 BC (99.4%)
+## 1444 BC - 1260 BC (99.7%)      1492 BC - 1476 BC (0.4%)
+##                                1453 BC - 1268 BC (99.3%)
 ## 
 ## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
@@ -837,13 +834,13 @@ my_result_data
 ## unmodelled:                    posterior:
 ## 
 ## one sigma                      one sigma
-## 1604 BC - 1582 BC (14.9%)      1524 BC - 1495 BC (34.2%)
-## 1556 BC - 1552 BC (1.9%)       1478 BC - 1450 BC (34%)
+## 1604 BC - 1582 BC (14.9%)      1525 BC - 1495 BC (34.9%)
+## 1556 BC - 1552 BC (1.9%)       1477 BC - 1450 BC (33.3%)
 ## 1544 BC - 1494 BC (44.9%)      
 ## 1472 BC - 1460 BC (6.5%)       
 ## 
 ## two sigma                      two sigma
-## 1610 BC - 1490 BC (81.9%)      1548 BC - 1432 BC (95.4%)
+## 1610 BC - 1490 BC (81.9%)      1547 BC - 1432 BC (95.4%)
 ## 1482 BC - 1450 BC (13.5%)      
 ## 
 ## three sigma                    three sigma
@@ -868,16 +865,14 @@ my_result_data
 ##                                posterior:
 ## 
 ##                                one sigma
-##                                1412 BC - 1256 BC (68.2%)
+##                                1414 BC - 1260 BC (68.2%)
 ## 
 ##                                two sigma
-##                                1440 BC - 972 BC (95.2%)
-##                                967 BC - 957 BC (0.2%)
+##                                1440 BC - 986 BC (95.3%)
+##                                962 BC - 957 BC (0.1%)
 ## 
 ##                                three sigma
-##                                1489 BC - 1468 BC (0.2%)
-##                                1460 BC - 600 BC (99.4%)
-##                                594 BC - 573 BC (0.1%)
+##                                1487 BC - 617 BC (99.7%)
 ## 
 ## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
