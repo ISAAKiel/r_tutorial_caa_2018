@@ -48,22 +48,53 @@ So lets start with them and install them if necessary
 
 
 ```r
-# currently installing the additional_oxcal_commands branch from github
-# temporarily deactivated due to airplane mode
-#library(devtools)
+# we might need the devtools package to install other packages from Github
+library(devtools)
 
-#devtools::install_github('MartinHinz/oxcAAR', ref="additional_oxcal_commands")
+# if not already done, install c14bazAAR and oxcAAR from Github
+
+isaak_packages <- c("c14bazAAR", "oxcAAR")
+
+devtools::install_github(
+  repo = c("ISAAKiel/c14bazAAR", "ISAAKiel/oxcAAR")
+)
+```
+
+```
+## Skipping install of 'c14bazAAR' from a github remote, the SHA1 (cac7df24) has not changed since last install.
+##   Use `force = TRUE` to force installation
+```
+
+```
+## Skipping install of 'oxcAAR' from a github remote, the SHA1 (45ce867e) has not changed since last install.
+##   Use `force = TRUE` to force installation
+```
+
+```r
+library(oxcAAR) # load package
+library(c14bazAAR) # load package
 
 # A bit of magick
 # I added dplyer because we might need it later
-package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we would like to have
+package_list <- c("Bchron", "rcarbon", "dplyr") # The packages we would like to have
 
 for (package in package_list){ # for each in the list
-  # if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
-  #   install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
-  # }
+  if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
+    install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
+  }
   library(package,character.only = TRUE) # load package
 }
+```
+
+```
+## 
+## Attaching package: 'rcarbon'
+```
+
+```
+## The following object is masked from 'package:c14bazAAR':
+## 
+##     calibrate
 ```
 
 ```
@@ -197,8 +228,26 @@ oxcAAR needs a bit of extra love before it works. It relies on OxCal as calibrat
 
 
 ```r
-# temporarily deactivated due to airplane mode
-#quickSetupOxcal()
+quickSetupOxcal()
+```
+
+```
+## Oxcal doesn't seem to be installed. Downloading it now:
+```
+
+```
+## Oxcal download to /tmp/Rtmpbiiurf successful!
+```
+
+```
+## Oxcal path set!
+```
+
+```
+## NULL
+```
+
+```r
 oxcAAR::setOxcalExecutablePath("~/OxCal/bin/OxCalLinux")
 ```
 
@@ -244,18 +293,9 @@ str(calDate.oxcAAR)
 ##   .. ..$ dates        : num [1:158] -2910 -2904 -2900 -2894 -2890 ...
 ##   .. ..$ probabilities: num [1:158] 0.00 0.00 0.00 7.19e-09 3.59e-08 ...
 ##   ..$ posterior_sigma_ranges :List of 3
-##   .. ..$ one_sigma  :'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
-##   .. ..$ two_sigma  :'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
-##   .. ..$ three_sigma:'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
+##   .. ..$ one_sigma  : logi NA
+##   .. ..$ two_sigma  : logi NA
+##   .. ..$ three_sigma: logi NA
 ##   ..$ posterior_probabilities: logi NA
 ##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
 ##  - attr(*, "class")= chr [1:2] "list" "oxcAARCalibratedDatesList"
@@ -391,18 +431,9 @@ str(calMultiDate.oxcAAR)
 ##   .. ..$ dates        : num [1:158] -2910 -2904 -2900 -2894 -2890 ...
 ##   .. ..$ probabilities: num [1:158] 0.00 0.00 0.00 7.19e-09 3.59e-08 ...
 ##   ..$ posterior_sigma_ranges :List of 3
-##   .. ..$ one_sigma  :'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
-##   .. ..$ two_sigma  :'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
-##   .. ..$ three_sigma:'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
+##   .. ..$ one_sigma  : logi NA
+##   .. ..$ two_sigma  : logi NA
+##   .. ..$ three_sigma: logi NA
 ##   ..$ posterior_probabilities: logi NA
 ##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
 ##  $ 2:List of 9
@@ -433,18 +464,9 @@ str(calMultiDate.oxcAAR)
 ##   .. ..$ dates        : num [1:90] -1440 -1434 -1430 -1424 -1420 ...
 ##   .. ..$ probabilities: num [1:90] 0.00 0.00 0.00 3.43e-08 6.87e-08 ...
 ##   ..$ posterior_sigma_ranges :List of 3
-##   .. ..$ one_sigma  :'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
-##   .. ..$ two_sigma  :'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
-##   .. ..$ three_sigma:'data.frame':	0 obs. of  3 variables:
-##   .. .. ..$ start      : num(0) 
-##   .. .. ..$ end        : num(0) 
-##   .. .. ..$ probability: num(0) 
+##   .. ..$ one_sigma  : logi NA
+##   .. ..$ two_sigma  : logi NA
+##   .. ..$ three_sigma: logi NA
 ##   ..$ posterior_probabilities: logi NA
 ##   ..- attr(*, "class")= chr "oxcAARCalibratedDate"
 ##  - attr(*, "class")= chr [1:2] "list" "oxcAARCalibratedDatesList"
@@ -556,42 +578,6 @@ In the real world you might have the data already present in a convenient format
 
 
 ```r
-# The following code is only necessary if using the CRAN 1.0.0 version of oxcAAR
-# You might like to checkout the Github version (currently Branch additional_oxcal_commands)
-
-Phase <- function(r_dates_strings, names='') {
-  paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
-}
-
-Boundary <- function(names) {
-  paste("Boundary(\"", names, "\");", sep = "")
-}
-
-wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
-  n_phases <- length(phases_strings)
-  if(length(boundary_names)==1) {
-    if(is.na(boundary_names)){
-    boundary_names <- 1:n_phases + 1
-    } else {
-      boundary_names <- rep(boundary_names,n_phases + 1)
-    }
-  }
-  my_result <- character(n_phases*2+1)
-  for(i in 1:n_phases) {
-    my_result[2*i-1] <- Boundary(boundary_names[i])
-    my_result[2*i] <- phases_strings[i]
-  }
-  my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
-  return(my_result)
-}
-
-Sequence <- function(sequence_elements, name='') {
-  paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
-}
-```
-
-
-```r
 # make a list of strings, an element per phase with the R_Dates
 phased_dates <- by(my_sequence,my_sequence$phase, function(x)
   R_Date(x$name,x$bp,x$std))
@@ -646,14 +632,22 @@ my_result_data
 ## =============================
 ## 
 ## 
+##                                posterior:
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##                                      one sigma: 2168 BC - 1954 BC
-##                                      two sigma: 2572 BC - 1907 BC
-##                                    three sigma: 3135 BC - 1894 BC
+##                                one sigma
+##                                2178 BC - 1954 BC (68.2%)
 ## 
-## Calibrated after:
+##                                two sigma
+##                                2622 BC - 2614 BC (0.1%)
+##                                2603 BC - 2592 BC (0.2%)
+##                                2583 BC - 1900 BC (95.1%)
+## 
+##                                three sigma
+##                                3181 BC - 3096 BC (0.4%)
+##                                3078 BC - 3050 BC (0.1%)
+##                                3040 BC - 1895 BC (99.2%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -663,13 +657,20 @@ my_result_data
 ## 
 ## BP = 3640, std = 28
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##     one sigma: 2033 BC - 1950 BC     one sigma: 2024 BC - 1948 BC
-##     two sigma: 2130 BC - 1922 BC     two sigma: 2120 BC - 1902 BC
-##   three sigma: 2136 BC - 1895 BC   three sigma: 2132 BC - 1888 BC
 ## 
-## Calibrated after:
+## unmodelled:                    posterior:
+## 
+## one sigma                      one sigma
+## 2033 BC - 1950 BC (68.2%)      2024 BC - 1948 BC (68.2%)
+## 
+## two sigma                      two sigma
+## 2130 BC - 2084 BC (14.6%)      2119 BC - 2090 BC (5.1%)
+## 2050 BC - 1922 BC (80.8%)      2045 BC - 1900 BC (90.3%)
+## 
+## three sigma                    three sigma
+## 2136 BC - 1895 BC (99.7%)      2132 BC - 1888 BC (99.7%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -679,13 +680,22 @@ my_result_data
 ## 
 ## BP = 3340, std = 33
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##     one sigma: 1684 BC - 1560 BC     one sigma: 1686 BC - 1618 BC
-##     two sigma: 1730 BC - 1528 BC     two sigma: 1740 BC - 1564 BC
-##   three sigma: 1744 BC - 1504 BC   three sigma: 1754 BC - 1530 BC
 ## 
-## Calibrated after:
+## unmodelled:                    posterior:
+## 
+## one sigma                      one sigma
+## 1684 BC - 1606 BC (58.2%)      1686 BC - 1617 BC (68.2%)
+## 1580 BC - 1560 BC (10%)        
+## 
+## two sigma                      two sigma
+## 1730 BC - 1718 BC (2.4%)       1741 BC - 1710 BC (11.6%)
+## 1692 BC - 1528 BC (93%)        1697 BC - 1594 BC (80.5%)
+##                                1584 BC - 1563 BC (3.3%)
+## 
+## three sigma                    three sigma
+## 1744 BC - 1504 BC (99.7%)      1754 BC - 1530 BC (99.7%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -693,14 +703,7 @@ my_result_data
 ## =============================
 ## 
 ## 
-## 
-## unmodelled:                                  
-##                                                                
-##                                    
-##                                    
-##                                    
-## 
-## Calibrated after:
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -708,14 +711,18 @@ my_result_data
 ## =============================
 ## 
 ## 
+##                                posterior:
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##                                      one sigma: 1646 BC - 1552 BC
-##                                      two sigma: 1688 BC - 1512 BC
-##                                    three sigma: 1735 BC - 1500 BC
+##                                one sigma
+##                                1646 BC - 1552 BC (68.2%)
 ## 
-## Calibrated after:
+##                                two sigma
+##                                1687 BC - 1513 BC (95.4%)
+## 
+##                                three sigma
+##                                1734 BC - 1498 BC (99.7%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -725,13 +732,22 @@ my_result_data
 ## 
 ## BP = 3230, std = 31
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##     one sigma: 1526 BC - 1449 BC     one sigma: 1606 BC - 1500 BC
-##     two sigma: 1606 BC - 1430 BC     two sigma: 1614 BC - 1484 BC
-##   three sigma: 1615 BC - 1415 BC   three sigma: 1624 BC - 1454 BC
 ## 
-## Calibrated after:
+## unmodelled:                    posterior:
+## 
+## one sigma                      one sigma
+## 1526 BC - 1449 BC (68.2%)      1606 BC - 1580 BC (27.1%)
+##                                1560 BC - 1550 BC (7%)
+##                                1544 BC - 1500 BC (34.1%)
+## 
+## two sigma                      two sigma
+## 1606 BC - 1580 BC (8.6%)       1614 BC - 1486 BC (95.4%)
+## 1560 BC - 1430 BC (86.8%)      
+## 
+## three sigma                    three sigma
+## 1615 BC - 1415 BC (99.7%)      1624 BC - 1454 BC (99.7%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -741,13 +757,22 @@ my_result_data
 ## 
 ## BP = 3370, std = 50
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##     one sigma: 1740 BC - 1611 BC     one sigma: 1622 BC - 1526 BC
-##     two sigma: 1865 BC - 1520 BC     two sigma: 1652 BC - 1504 BC
-##   three sigma: 1880 BC - 1499 BC   three sigma: 1704 BC - 1464 BC
 ## 
-## Calibrated after:
+## unmodelled:                    posterior:
+## 
+## one sigma                      one sigma
+## 1740 BC - 1708 BC (15.1%)      1624 BC - 1598 BC (14.7%)
+## 1699 BC - 1611 BC (53.1%)      1588 BC - 1526 BC (53.5%)
+## 
+## two sigma                      two sigma
+## 1865 BC - 1847 BC (1.5%)       1652 BC - 1504 BC (95.4%)
+## 1772 BC - 1520 BC (93.9%)      
+## 
+## three sigma                    three sigma
+## 1880 BC - 1499 BC (99.7%)      1704 BC - 1490 BC (99.5%)
+##                                1478 BC - 1463 BC (0.2%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -755,14 +780,7 @@ my_result_data
 ## =============================
 ## 
 ## 
-## 
-## unmodelled:                                  
-##                                                                
-##                                    
-##                                    
-##                                    
-## 
-## Calibrated after:
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -770,14 +788,18 @@ my_result_data
 ## =============================
 ## 
 ## 
+##                                posterior:
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##                                      one sigma: 1560 BC - 1475 BC
-##                                      two sigma: 1600 BC - 1456 BC
-##                                    three sigma: 1614 BC - 1434 BC
+##                                one sigma
+##                                1561 BC - 1476 BC (68.2%)
 ## 
-## Calibrated after:
+##                                two sigma
+##                                1600 BC - 1456 BC (95.4%)
+## 
+##                                three sigma
+##                                1614 BC - 1434 BC (99.7%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -787,13 +809,21 @@ my_result_data
 ## 
 ## BP = 3100, std = 25
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##     one sigma: 1412 BC - 1305 BC     one sigma: 1426 BC - 1325 BC
-##     two sigma: 1426 BC - 1292 BC     two sigma: 1434 BC - 1300 BC
-##   three sigma: 1444 BC - 1260 BC   three sigma: 1492 BC - 1268 BC
 ## 
-## Calibrated after:
+## unmodelled:                    posterior:
+## 
+## one sigma                      one sigma
+## 1412 BC - 1379 BC (32.6%)      1425 BC - 1376 BC (60.3%)
+## 1341 BC - 1305 BC (35.6%)      1336 BC - 1324 BC (7.9%)
+## 
+## two sigma                      two sigma
+## 1426 BC - 1292 BC (95.4%)      1433 BC - 1300 BC (95.4%)
+## 
+## three sigma                    three sigma
+## 1444 BC - 1260 BC (99.7%)      1492 BC - 1477 BC (0.3%)
+##                                1454 BC - 1268 BC (99.4%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -803,13 +833,23 @@ my_result_data
 ## 
 ## BP = 3250, std = 27
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##     one sigma: 1604 BC - 1460 BC     one sigma: 1524 BC - 1450 BC
-##     two sigma: 1610 BC - 1450 BC     two sigma: 1548 BC - 1432 BC
-##   three sigma: 1620 BC - 1432 BC   three sigma: 1594 BC - 1421 BC
 ## 
-## Calibrated after:
+## unmodelled:                    posterior:
+## 
+## one sigma                      one sigma
+## 1604 BC - 1582 BC (14.9%)      1524 BC - 1495 BC (34.2%)
+## 1556 BC - 1552 BC (1.9%)       1478 BC - 1450 BC (34%)
+## 1544 BC - 1494 BC (44.9%)      
+## 1472 BC - 1460 BC (6.5%)       
+## 
+## two sigma                      two sigma
+## 1610 BC - 1490 BC (81.9%)      1548 BC - 1432 BC (95.4%)
+## 1482 BC - 1450 BC (13.5%)      
+## 
+## three sigma                    three sigma
+## 1620 BC - 1432 BC (99.7%)      1594 BC - 1422 BC (99.7%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -817,14 +857,7 @@ my_result_data
 ## =============================
 ## 
 ## 
-## 
-## unmodelled:                                  
-##                                                                
-##                                    
-##                                    
-##                                    
-## 
-## Calibrated after:
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -832,14 +865,21 @@ my_result_data
 ## =============================
 ## 
 ## 
+##                                posterior:
 ## 
-## unmodelled:                        posterior:
-##                                                                
-##                                      one sigma: 1414 BC - 1260 BC
-##                                      two sigma: 1442 BC - 974 BC
-##                                    three sigma: 1488 BC - 580 BC
+##                                one sigma
+##                                1412 BC - 1256 BC (68.2%)
 ## 
-## Calibrated after:
+##                                two sigma
+##                                1440 BC - 972 BC (95.2%)
+##                                967 BC - 957 BC (0.2%)
+## 
+##                                three sigma
+##                                1489 BC - 1468 BC (0.2%)
+##                                1460 BC - 600 BC (99.4%)
+##                                594 BC - 573 BC (0.1%)
+## 
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013) 
 ## 
 ## =============================
@@ -847,14 +887,7 @@ my_result_data
 ## =============================
 ## 
 ## 
-## 
-## unmodelled:                                  
-##                                                                
-##                                    
-##                                    
-##                                    
-## 
-## Calibrated after:
+## Calibrated with:
 ## 	  IntCal13 atmospheric curve (Reimer et al 2013)
 ```
 
@@ -864,10 +897,6 @@ plot(my_result_data)
 
 ![](first_part_basic_calibration_files/figure-html/make_string_for_sequence_calibration-1.png)<!-- -->
 
-```r
-plot(my_result_data[[13]])
-```
+As you see, now we have the dates calibrated according to the specified model. The unmodelled distributions are given in lighter, the modelled in darker gray. Also the boundaries are displayed.
 
-![](first_part_basic_calibration_files/figure-html/make_string_for_sequence_calibration-2.png)<!-- -->
-
-As you see, now we have the dates calibrated according to the specified model. The unmodelled distributions are given in lighter, the modelled in darker gray.
+The graphical output might improve soon, but already now all the essential informations from OxCal can be plotted, and probably more important, accessed via R.

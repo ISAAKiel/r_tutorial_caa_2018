@@ -49,20 +49,28 @@ Essentially it is Bchron, rcarbon and oxcAAR!
 So lets start with them and install them if necessary
 
 ```{r install_packages}
-# currently installing the additional_oxcal_commands branch from github
-# temporarily deactivated due to airplane mode
-#library(devtools)
+# we might need the devtools package to install other packages from Github
+library(devtools)
 
-#devtools::install_github('MartinHinz/oxcAAR', ref="additional_oxcal_commands")
+# if not already done, install c14bazAAR and oxcAAR from Github
+
+isaak_packages <- c("c14bazAAR", "oxcAAR")
+
+devtools::install_github(
+  repo = c("ISAAKiel/c14bazAAR", "ISAAKiel/oxcAAR")
+)
+
+library(oxcAAR) # load package
+library(c14bazAAR) # load package
 
 # A bit of magick
 # I added dplyer because we might need it later
-package_list <- c("Bchron", "rcarbon", "oxcAAR", "dplyr") # The packages we would like to have
+package_list <- c("Bchron", "rcarbon", "dplyr") # The packages we would like to have
 
 for (package in package_list){ # for each in the list
-  # if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
-  #   install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
-  # }
+  if( !is.element(package, .packages(all.available = TRUE)) ) { #check if it is not already installed
+    install.packages(package, repos = "http://cran.us.r-project.org") # if not, install it
+  }
   library(package,character.only = TRUE) # load package
 }
 ```
@@ -131,9 +139,10 @@ Also nice, lacking the uncal probability and the calibration curve, but highligh
 oxcAAR needs a bit of extra love before it works. It relies on OxCal as calibration backend, so we have to install it first. Luckily there is a helper for doing that:
 
 ```{r oxcAAR_install_OxCal}
-# temporarily deactivated due to airplane mode
-#quickSetupOxcal()
+
+quickSetupOxcal()
 oxcAAR::setOxcalExecutablePath("~/OxCal/bin/OxCalLinux")
+
 ```
 
 Oxcal is installed in your working directory, and the path to the executable is set. With that we might proceed to the calibration:
@@ -293,41 +302,6 @@ my_sequence
 ```
 
 In the real world you might have the data already present in a convenient format, like csv data exported from Excel.
-
-```{r functions_for_sequence_calibration}
-# The following code is only necessary if using the CRAN 1.0.0 version of oxcAAR
-# You might like to checkout the Github version (currently Branch additional_oxcal_commands)
-
-Phase <- function(r_dates_strings, names='') {
-  paste("Phase(\"", names, "\"){\n",r_dates_strings,"};", sep = "")
-}
-
-Boundary <- function(names) {
-  paste("Boundary(\"", names, "\");", sep = "")
-}
-
-wrap_in_boundaries <- function(phases_strings, boundary_names=NA) {
-  n_phases <- length(phases_strings)
-  if(length(boundary_names)==1) {
-    if(is.na(boundary_names)){
-    boundary_names <- 1:n_phases + 1
-    } else {
-      boundary_names <- rep(boundary_names,n_phases + 1)
-    }
-  }
-  my_result <- character(n_phases*2+1)
-  for(i in 1:n_phases) {
-    my_result[2*i-1] <- Boundary(boundary_names[i])
-    my_result[2*i] <- phases_strings[i]
-  }
-  my_result[length(my_result)] <- Boundary(tail(boundary_names, n=1))
-  return(my_result)
-}
-
-Sequence <- function(sequence_elements, name='') {
-  paste("Sequence(\"", name, "\")\n{", paste(sequence_elements,collapse="\n"), "};", sep="")
-}
-```
 
 ```{r make_string_for_sequence_calibration}
 
