@@ -18,6 +18,8 @@ library(magrittr)
 library(mapview)
 library(sp)
 library(sf)
+# might be necessary to detach rcarbon first due to 'calibrate()' function
+# detach('package:rcarbon')
 library(c14bazAAR)
 ```
 
@@ -135,6 +137,26 @@ get_AustArch()
 ```
 
 ```
+## Warning in evalq(as.integer(c14age), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.integer(c14std), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.double(lat), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.double(lon), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
 ## 	Radiocarbon date list
 ## 	dates		5044
 ## 	sites		1743
@@ -201,6 +223,36 @@ all_dates <- get_all_dates()
 
 ```
 ## Trying to download all dates...
+```
+
+```
+## Warning in evalq(as.integer(c14age), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.integer(c14age), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.integer(c14std), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.double(lat), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.double(lon), <environment>): NAs durch Umwandlung
+## erzeugt
+```
+
+```
+## Warning in evalq(as.double(c13val), <environment>): NAs durch Umwandlung
+## erzeugt
 ```
 
 ### An own data structure: the c14_date_list
@@ -447,23 +499,19 @@ unique(calpal$material)
 ```
 
 ```
-##  [1] "charcoal"            "bone"                NA                   
-##  [4] "textile"             "organic"             "grain"              
-##  [7] "Escargotière"        "wood"                "straw"              
-## [10] "shell"               "seed"                "Bone"               
-## [13] "food remains"        "charred material"    "seeds"              
-## [16] "reed"                "plant remains"       "charred seed"       
-## [19] "grain, lenses, peas" "coquille"            "ceramics"           
-## [22] "eggshell"            "wicker"              "peat"               
-## [25] "fruit/seeds"         "pottery"             "antler"             
-## [28] "linen"               "soil"                "other"              
-## [31] "legume"              "plant"               "organic temper"     
-## [34] "Seed"                "Ln"                  "charcoal?"          
-## [37] "olive stone"         "Rotlehm"             "k. A."              
-## [40] "bone/collagen"       "reed+twig"           "ostrich egg"        
-## [43] "eichelbruch"         "bone/apatit"         "c"                  
-## [46] "tooth"               "tand, ko"            "humic acids"        
-## [49] "Tannenreisig I"      "burnt plants"
+##  [1] "charcoal"          NA                  "seed"             
+##  [4] "bone"              "wood"              "grain"            
+##  [7] "food remains"      "eggshell"          "shell"            
+## [10] "antler"            "ostrich egg"       "linen"            
+## [13] "hazelnutshell"     "plant"             "textile"          
+## [16] "bone (Bos taurus)" "Seed"              "plant remains"    
+## [19] "seeds"             "mollusc"           "olive stone"      
+## [22] "Charred twig"      "acorns"            "organic"          
+## [25] "pottery"           "cloth"             "humic acid"       
+## [28] "peat"              "soil"              "mat"              
+## [31] "cereal"            "Br"                "reed"             
+## [34] "fruit/seeds"       "food"              "bos"              
+## [37] "Bone"              "hair"              "Ln"
 ```
 
 ```r
@@ -656,8 +704,8 @@ duplicate_selection %>%
 
 ```
 ## n
-##    1    2    3    5   17 
-## 4675  139    5    3    1
+##    1    2    5    9   23 
+## 4649  157    1    1    1
 ```
 
 `mark_duplicates` searches for duplicates in labnrs and marks duplicate groups.
@@ -695,7 +743,8 @@ duplicate_selection$duplicate_group %>% unique
 ##  [86]  84  85  86  87  88  89  90  91  92  93  94  95  96  97  98  99 100
 ## [103] 101 102 103 104 105 106 107 108 109 110 111 112 113 114 115 116 117
 ## [120] 118 119 120 121 122 123 124 125 126 127 128 129 130 131 132 133 134
-## [137] 135 136 137 138 139 140 141 142 143 144 145 146
+## [137] 135 136 137 138 139 140 141 142 143 144 145 146 147 148 149 150 151
+## [154] 152 153 154 155 156 157 158
 ```
 
 ```r
@@ -707,8 +756,8 @@ duplicate_selection %>%
 ## # A tibble: 2 x 20
 ##   sourcedb method labnr c14age c14std c13val site  sitetype feature period
 ##   <chr>    <chr>  <chr>  <int>  <int>  <dbl> <chr> <chr>    <chr>   <chr> 
-## 1 CALPAL   14C    Ki-6…   4290     90     0. Pere… <NA>     <NA>    Bronz…
-## 2 CALPAL   14C    Ki-6…   4070    120     0. Verk… <NA>     <NA>    Bronz…
+## 1 RADON    <NA>   GrA-…   4675     35  -30.7 Radd… enclosu… inner … <NA>  
+## 2 EUROEVOL <NA>   GrA-…   4675     35   NA   Radd… <NA>     <NA>    UN    
 ## # ... with 10 more variables: culture <chr>, material <chr>,
 ## #   species <chr>, region <chr>, country <chr>, lat <dbl>, lon <dbl>,
 ## #   shortref <chr>, comment <chr>, duplicate_group <int>
@@ -736,7 +785,7 @@ duplicates_removed %>%
 ## # A tibble: 1 x 21
 ##   sourcedb method labnr c14age c14std c13val site  sitetype feature period
 ##   <chr>    <chr>  <chr>  <int>  <int>  <dbl> <chr> <chr>    <chr>   <chr> 
-## 1 CALPAL   14C    Ki-6…     NA     NA     0. <NA>  <NA>     <NA>    Bronz…
+## 1 <NA>     <NA>   GrA-…   4675     35  -30.7 <NA>  enclosu… inner … UN    
 ## # ... with 11 more variables: culture <chr>, material <chr>,
 ## #   species <chr>, region <chr>, country <chr>, lat <dbl>, lon <dbl>,
 ## #   shortref <chr>, comment <chr>, duplicate_group <int>,
@@ -750,7 +799,7 @@ duplicates_removed %>%
 ```
 
 ```
-## [1] "sourcedb: CALPAL, method: 14C, labnr: Ki-602, c14age: 4290|4070, c14std: 90|120, c13val: 0, site: Perescepino|Verkhne Tarasovka, sitetype: NA, feature: NA, period: Bronze Age, culture: Pit Grave Culture, material: NA, species: NA, region: NA, country: Ukraine, lat: 49.02|NA, lon: 35.19|NA, shortref: Bojadziev 1998, comment: Zaitseva 2004|NA, duplicate_group: 30"
+## [1] "sourcedb: RADON|EUROEVOL, method: NA, labnr: GrA-31190, c14age: 4675, c14std: 35, c13val: -30.7|NA, site: Raddon, Devon|Raddon, sitetype: enclosure|NA, feature: inner ditch, area B, ditch II, F576, context %73, from layer in mid fill of ditch, stratified above 574|NA, period: NA|UN, culture: Neolithikum|NA, material: miscellaneous|carbonised residue, species: small neolithic bowl sherd, with some internal residue|NA, region: NA, country: United Kingdom|Great Britain, lat: 50.816931|50.8212, lon: -3.58342|-0.744189, shortref: Albert & Schröter 1977|NA, comment: NA, duplicate_group: 30"
 ```
 
 Another way to get a first understanding on the data without the duplicates is to just keep the first date in every duplicate group.
@@ -764,20 +813,20 @@ duplicate_selection[!is.na(duplicate_selection$duplicate_group), ] %>%
 ```
 
 ```
-## # A tibble: 147 x 20
-##    sourcedb method labnr  c14age c14std c13val site     sitetype  feature 
-##    <chr>    <chr>  <chr>   <int>  <int>  <dbl> <chr>    <chr>     <chr>   
-##  1 EUROEVOL <NA>   OxA-1…   6605     50   NA   Creag n… <NA>      <NA>    
-##  2 RADON    <NA>   GrN-2…   7285     25   NA   Marienb… <NA>      <NA>    
-##  3 RADON    <NA>   K-555    5840    120   NA   Zwenkau… settleme… Pfosten…
-##  4 RADON    <NA>   St-69…   4490     95  -20.2 Alvastra collecti… femur f…
-##  5 RADON    <NA>   GrN-1…   8120     80   NA   Glimmer  <NA>      <NA>    
-##  6 RADON-B  <NA>   GrN-6…   4025     95   NA   Zambujal <NA>      <NA>    
-##  7 RADON    <NA>   Beta-…   4140     60   NA   Maghera… <NA>      <NA>    
-##  8 CALPAL   14C    OxA-3…   9390     70    0.  Palynol… <NA>      <NA>    
-##  9 CALPAL   14C    ETH-9…   6165     85    0.  Arleshe… <NA>      <NA>    
-## 10 RADON    <NA>   OxA-1…   4000    120  -21.0 Winterb… <NA>      W55C, 3…
-## # ... with 137 more rows, and 11 more variables: period <chr>,
+## # A tibble: 159 x 20
+##    sourcedb method labnr  c14age c14std c13val site       sitetype feature
+##    <chr>    <chr>  <chr>   <int>  <int>  <dbl> <chr>      <chr>    <chr>  
+##  1 CALPAL   14C    Lu-15…   6710     70     0. Ageröd V   <NA>     <NA>   
+##  2 RADON    <NA>   HAR-6…   3570    100    NA  Brenig     <NA>     <NA>   
+##  3 EUROEVOL <NA>   GrN-2…   8020     50    NA  Groningen  <NA>     <NA>   
+##  4 CALPAL   14C    Lu-845   3540     60     0. Hindby mo… <NA>     <NA>   
+##  5 RADON    <NA>   Beta-…   5020    110    NA  Arene Can… <NA>     BB08 H 
+##  6 RADON    <NA>   OxA-1…   9700    160    NA  Vale of P… <NA>     56     
+##  7 CALPAL   14C    H-491…   5140    115     0. Heidmoor   <NA>     <NA>   
+##  8 RADON    <NA>   GrA-2…   4965     40    NA  Whitehawk  <NA>     <NA>   
+##  9 EUROEVOL <NA>   GrN-2…   6890     60    NA  Zwolle-Ha… <NA>     <NA>   
+## 10 EUROEVOL <NA>   Gif-1…   3700    120    NA  La Chauss… <NA>     <NA>   
+## # ... with 149 more rows, and 11 more variables: period <chr>,
 ## #   culture <chr>, material <chr>, species <chr>, region <chr>,
 ## #   country <chr>, lat <dbl>, lon <dbl>, shortref <chr>, comment <chr>,
 ## #   duplicate_group <int>

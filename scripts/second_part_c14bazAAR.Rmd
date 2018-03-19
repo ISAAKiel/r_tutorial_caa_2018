@@ -19,6 +19,8 @@ library(magrittr)
 library(mapview)
 library(sp)
 library(sf)
+# might be necessary to detach rcarbon first due to 'calibrate()' function
+# detach('package:rcarbon')
 library(c14bazAAR)
 ```
 
