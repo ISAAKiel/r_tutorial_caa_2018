@@ -112,6 +112,9 @@ my_result_data
 # 2. c14bazAAR #
 ################
 
+# might be necessary to detach rcarbon first due to 'calibrate()' function
+# detach('package:rcarbon')
+
 # ---------------- your code ----------------
 
 # fill in your code here
