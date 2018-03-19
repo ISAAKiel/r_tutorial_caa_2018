@@ -65,7 +65,7 @@ devtools::install_github(
 #
 ##########################################
 
-# ---------------- snip ----------------
+# ======== snip ========
 # make a list of strings, an element per phase with the R_Dates
 phased_dates <- by(my_sequence,my_sequence$phase, function(x)
   R_Date(x$name,x$bp,x$std))
@@ -84,7 +84,7 @@ my_oxcal_code <- Sequence(my_sequence_elements, name = "my_sequence")
 
 cat(my_oxcal_code)
 
-# ---------------- snip ----------------
+# ======== snip ========
 
 ##########################################
 #
@@ -92,7 +92,7 @@ cat(my_oxcal_code)
 #
 ##########################################
 
-# ---------------- snip ----------------
+# ======== snip ========
 
 # call Oxcal and read and parse the result
 my_result_file <- executeOxcalScript(my_oxcal_code)
@@ -124,7 +124,7 @@ my_result_data
 #
 ##########################################
 
-# ---------------- snip ----------------
+# ======== snip ========
 
 dates_4000_4500 <- calibrated %>%
   dplyr::select(labnr, calrange) %>%
@@ -138,7 +138,7 @@ dates_4000_4500 <- calibrated %>%
 
 calibrated[calibrated$labnr %in% dates_4000_4500, ]
 
-# ---------------- snip ----------------
+# ======== snip ========
 
 # ---------------- your code ----------------
 
@@ -152,7 +152,7 @@ calibrated[calibrated$labnr %in% dates_4000_4500, ]
 #
 ##########################################
 
-# ---------------- snip ----------------
+# ======== snip ========
 
 #### get all dates (again)
 
@@ -241,4 +241,184 @@ bawue_final <- bawue_calibrated %>%
 
 #saveRDS(bawue_final, file = "bawue_final.RDS")
 
-# ---------------- snip ----------------
+# ======== snip ========
+
+###################################
+# 3. Mass operations on 14C dates #
+###################################
+
+# ---------------- your code ----------------
+
+# fill in your code here
+
+# ---------------- your code ----------------
+
+## 3.1 simple sum calibration
+
+##########################################
+#
+# The following snippet is doing our sum calibration for Baden-Würtemberg. 
+#
+##########################################
+
+# ======== snip ========
+
+my_result_data <- bawue_sum_code %>%
+  executeOxcalScript() %>%
+  readOxcalOutput() %>%
+  parseOxcalOutput(only.R_Date = FALSE, first = TRUE)
+
+str(my_result_data)
+
+# ======== snip ========
+
+# ---------------- your code ----------------
+
+# fill in your code here
+
+# ---------------- your code ----------------
+
+
+## 3.2 Binning
+
+##########################################
+#
+# The following snippet bins the 14C dates on site level
+#
+##########################################
+
+# ======== snip ========
+
+# First, we add another column to our data, containing the R_Date string for that date:
+
+bawue_final %<>% rowwise() %>%            # for each date (=row)
+  mutate(oxcal_string = R_Date(labnr,     # add a column containing the R_Date code
+                               c14age,
+                               c14std)) %>%
+  ungroup()                               # remove the rowwise grouping again
+
+bawue_final %>% select(sourcedb,labnr,c14age, c14std, oxcal_string)
+
+# Then we clue them together per site
+
+site_sums <- bawue_final %>%       # Take the dates
+  group_by(site) %>%               # per site do
+  summarise(
+    oxcal_string = paste(
+      oxcal_string, 
+      collapse = "\n")             # join the strings by a line break
+  )
+site_sums
+
+# finally, we wrap everything into sum commands
+
+bawue_sum_code <- site_sums %$%                               # finally take the strings
+  oxcal_Sum(oxcal_string = oxcal_string, name = site) %>%     # wrap them in sum
+  paste(collapse = "\n") %>%                                  # join the strings by line break
+  oxcal_Sum(name = "outer sum")                               # wrap the whole thing in a sum
+
+cat(substr(bawue_sum_code,1,253))
+# ======== snip ========
+
+# ---------------- your code ----------------
+
+# fill in your code here
+
+# ---------------- your code ----------------
+
+# 3.3 Simulating sum calibrations
+
+# ---------------- your code ----------------
+
+# fill in your code here
+
+# ---------------- your code ----------------
+
+
+
+##########################################
+#
+# The following snippet calculates and plots the 95% confidence intervals from our simulation
+#
+##########################################
+
+# ======== snip ========
+
+alpha = .05
+
+envelope <- sim_result %>% group_by(dates) %>% summarize(low=quantile(probabilities, alpha / 2),
+                                                         high=quantile(probabilities, 1 - alpha / 2))
+
+ggplot() +
+  geom_ribbon(data = envelope, aes(x=dates,ymin=low, ymax = high), alpha = .5) + 
+  geom_line(data = my_sum_result, aes(x=dates,y=probabilities), color="red") + xlim(time_window)
+
+# ======== snip ========
+
+##########################################
+#
+# The following snippet smoothes the sum calibration using a moving average filter
+#
+##########################################
+
+# ======== snip ========
+
+ma <- function(x,n=10){stats::filter(x,rep(1/n,n), sides=2)} # The smoothing function
+
+my_sum_result %<>% mutate(probabilities_smoothed = ma(probabilities))
+
+ggplot() +
+  geom_ribbon(data = envelope, aes(x=dates,ymin=low, ymax = high), alpha = .5) + 
+  geom_line(data = my_sum_result, aes(x=dates,y=probabilities), color="red") + 
+  geom_line(data = my_sum_result, aes(x=dates,y=probabilities_smoothed), color="blue") + xlim(time_window)
+
+# ======== snip ========
+
+##########################################
+#
+# The following snippet smoothes the confidence envelope using a moving average filter
+#
+##########################################
+
+# ======== snip ========
+
+envelope %<>% mutate(low_smoothed = ma(low), high_smoothed = ma(high))
+
+ggplot() +
+  geom_ribbon(data = envelope, aes(x=dates,ymin=low_smoothed, ymax = high_smoothed), alpha = .5) + 
+  geom_line(data = my_sum_result, aes(x=dates,y=probabilities_smoothed), color="blue") + xlim(time_window)
+
+# ======== snip ========
+
+##########################################
+#
+# The following snippet is doing the full analysis with 1000 repetitions.
+# Uncomment and run only if you have enough time!
+# On my computer it will take 1 HOUR!
+#
+##########################################
+
+# ======== snip ========
+
+# sim_result <- bawue_final %>% bootstrap(1000) %>% do(
+#   oxcalSumSim(
+#     n = nrow(bawue_final),
+#     stds = sample(bawue_final$c14std),
+#     timeframe_begin = -5500,
+#     timeframe_end = -700,
+#     date_distribution = "uniform"
+#   )$raw_probabilities
+# )
+# 
+# envelope <- sim_result %>% group_by(dates) %>% summarize(low=quantile(probabilities, alpha / 2),
+#                                                          high=quantile(probabilities, 1 - alpha / 2))
+# 
+# my_sum_result %<>% mutate(probabilities_smoothed = ma(probabilities))
+# 
+# envelope %<>% mutate(low_smoothed = ma(low), high_smoothed = ma(high))
+# 
+# ggplot() +
+#   geom_ribbon(data = envelope, aes(x=dates,ymin=low_smoothed, ymax = high_smoothed), alpha = .5) + 
+#   geom_line(data = my_sum_result, aes(x=dates,y=probabilities_smoothed), color="blue") + xlim(time_window)
+
+# ======== snip ========
