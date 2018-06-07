@@ -185,7 +185,7 @@ These differences only come from the different distribution of the dates, and at
 library(broom)
 library(ggplot2)
 
-sim_result <- bawue_final %>% bootstrap(10) %>% do(
+sim_result <- bawue_final %>% broom::bootstrap(10) %>% do(
   oxcalSumSim(
     n = nrow(bawue_final),
     stds = sample(bawue_final$c14std),
@@ -253,7 +253,7 @@ ggplot() +
 Those that are brave might now repeat this with a little more simulation runs, lets say 1000 (takes approx. 1h, dependend on your computer):
 
 ```{r cache=T, eval=F}
-sim_result <- bawue_final %>% bootstrap(1000) %>% do(
+sim_result <- bawue_final %>% broom::bootstrap(1000) %>% do(
   oxcalSumSim(
     n = nrow(bawue_final),
     stds = sample(bawue_final$c14std),
