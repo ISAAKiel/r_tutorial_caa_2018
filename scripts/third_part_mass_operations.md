@@ -323,7 +323,7 @@ lines(
 
 ![](third_part_mass_operations_files/figure-html/unnamed-chunk-11-1.png)<!-- -->
 
-These differences only come from the different distribution of the dates, and at second order, on the different position on the calibration curve. We can estimate the intensity of this effects, if we repeat the simulation several times. Lets say, for the sake of run time, we do that 10 times:
+These differences only come from the different distribution of the dates, and at second order, on the different position on the calibration curve. We can estimate the intensity of this effects, if we repeat the simulation several times. Lets say, for the sake of run time, we do that 10 times (using the bootstrap function from the broom package):
 
 
 ```r
